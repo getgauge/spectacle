@@ -1,0 +1,21 @@
+{
+    "id" : "m2h",
+    "version" : "0.0.1",
+    "name" : "M2H",
+    "description" : "Markdown to HTML",
+    "install": {
+        "windows": [],
+        "linux": [],
+        "darwin": []
+    },
+    "command" : {
+        "windows" : ["m2h"],
+        "linux" : ["m2h"],
+        "darwin" : ["m2h"]
+    },
+    "scope" : ["Docs"],
+    "gaugeVersionSupport": {
+        "minimum": "0.4.1",
+        "maximum": ""
+    }
+}
