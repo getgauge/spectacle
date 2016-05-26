@@ -12,22 +12,13 @@ import (
 )
 
 type specInfo struct {
-	path string
-	name string
-}
-
-func (s specInfo) MarshalJSON() string {
-	return fmt.Sprintf(`{"path": "%s", "name": "%s"}`, s.path, s.name)
+	Path string `json:"path"`
+	Name string `json:"name"`
 }
 
 type scenarioInfo struct {
-	name string
-	tags []string
-}
-
-func (s scenarioInfo) MarshalJSON() ([]byte, error) {
-	json := fmt.Sprintf(`{"name": "%s", "tags": ["%s"]}`, strings.Replace(s.name, "\\", "\\\\", -1), strings.Join(s.tags, "\", \""))
-	return []byte(json), nil
+	Name string   `json:"name"`
+	Tags []string `json:"tags"`
 }
 
 func WriteJS(specs []*gauge_messages.ProtoSpec, outDir string, fileExtn string) {
@@ -45,21 +36,29 @@ func getSpecsScenariosMap(specs []*gauge_messages.ProtoSpec, fileExtn string) (s
 	tags := make(map[string]bool)
 	for _, spec := range specs {
 		fileName := strings.TrimSuffix(filepath.Base(spec.GetFileName()), filepath.Ext(spec.GetFileName()))
-		si := specInfo{path: fileName + fileExtn, name: spec.GetSpecHeading()}
-		specJSON := si.MarshalJSON()
+		si := specInfo{Path: fileName + fileExtn, Name: spec.GetSpecHeading()}
+		specBytes, err := json.Marshal(si)
+		specJSON := string(specBytes)
+		if err != nil {
+			fmt.Println("Skipping spec %s. Reason: %s", spec.GetFileName(), err.Error())
+			continue
+		}
 		specScenarioMap[specJSON] = make([]scenarioInfo, 0)
 		addTags(spec.Tags, tags)
 		for _, item := range spec.Items {
 			if item.GetItemType() == gauge_messages.ProtoItem_Scenario {
 				addTags(item.Scenario.Tags, tags)
-				scnInfo := scenarioInfo{name: item.Scenario.GetScenarioHeading(), tags: append(item.Scenario.Tags, spec.Tags...)}
+				scnInfo := scenarioInfo{Name: item.Scenario.GetScenarioHeading(), Tags: append(item.Scenario.Tags, spec.Tags...)}
+				if len(scnInfo.Tags) < 1 {
+					scnInfo.Tags = make([]string, 0)
+				}
 				specScenarioMap[specJSON] = append(specScenarioMap[specJSON], scnInfo)
 			}
 		}
 	}
 	json, err := json.Marshal(specScenarioMap)
 	if err != nil {
-		fmt.Println(err.Error())
+		fmt.Println("Cannot convert specs to HTML. Reason: %s", err.Error())
 		return "", ""
 	}
 	return fmt.Sprintf("var specs = %s", string(json)), fmt.Sprintf("var tags = [%s]", strings.Join(getUniqueTags(tags), ", "))
