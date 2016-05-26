@@ -257,8 +257,8 @@ func compileAcrossPlatforms() {
 
 func installPlugin(installPrefix string) {
 	pluginInstallPath := filepath.Join(installPrefix, m2h, getPluginVersion())
-	mirrorFile(pluginJsonFile, filepath.Join(pluginInstallPath, pluginJsonFile))
 	mirrorDir(getBinDir(), pluginInstallPath)
+	mirrorFile(pluginJsonFile, filepath.Join(pluginInstallPath, pluginJsonFile))
 }
 
 func updatePluginInstallPrefix() {
