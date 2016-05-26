@@ -13,7 +13,7 @@
         "linux" : ["m2h"],
         "darwin" : ["m2h"]
     },
-    "scope" : ["Docs"],
+    "scope" : ["documentation"],
     "gaugeVersionSupport": {
         "minimum": "0.4.1",
         "maximum": ""
