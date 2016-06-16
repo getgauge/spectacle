@@ -17,6 +17,7 @@ import (
 const (
 	html             = ".html"
 	out              = "html"
+	docs             = "docs"
 	localhost        = "localhost"
 	gaugeSpecsDir    = "GAUGE_SPEC_DIRS"
 	gaugeApiPort     = "GAUGE_API_PORT"
@@ -25,14 +26,16 @@ const (
 	quotes           = `""''`
 	linkTemplate     = "<li class=\"nav\"><a href=\"%s\">%s</a></li>"
 	gaugeProjectRoot = "GAUGE_PROJECT_ROOT"
-	htmlTemplate     = `%s%s<ul id="navigation"><center>%s%s%s</center>%s`
+	htmlTemplate     = `%s%s<ul id="navigation"><center>%s%s%s</center>`
 	styleCSS         = "style.css"
 )
 
 func init() {
-	outDir = filepath.Join(os.Getenv(gaugeProjectRoot), out)
+	docsDir = filepath.Join(os.Getenv(gaugeProjectRoot), docs)
+	outDir = filepath.Join(os.Getenv(gaugeProjectRoot), docs, out)
 }
 
+var docsDir string
 var outDir string
 
 func main() {
@@ -43,8 +46,9 @@ func main() {
 	p, _ := processor.NewMessageProcessor(localhost, os.Getenv(gaugeApiPort))
 	msg, _ := p.GetSpecs()
 	p.Connection.Close()
+	os.Mkdir(docsDir, 0755)
 	os.Mkdir(outDir, 0755)
-	json.WriteJS(msg.AllSpecsResponse.Specs, outDir, html)
+	json.WriteJS(msg.AllSpecsResponse.Specs, files, outDir, html)
 	writeCSS()
 	var lastSpec string
 	for i, file := range files {
@@ -65,7 +69,7 @@ func convertFile(file string, files []string, index int, lastSpec *string) {
 	if index != 0 {
 		previous = fmt.Sprintf(linkTemplate, *lastSpec, "<")
 	}
-	output = fmt.Sprintf(htmlTemplate, constant.IncludeCSS, output, previous, constant.IncludeIndex, next, constant.JS)
+	output = fmt.Sprintf(htmlTemplate, constant.IncludeCSS, output, previous, constant.IncludeIndex, next)
 	name := strings.TrimSuffix(filepath.Base(file), filepath.Ext(file))
 	f, _ := os.Create(outDir + string(filepath.Separator) + name + html)
 	f.Write([]byte(output))

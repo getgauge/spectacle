@@ -1,6 +1,5 @@
 package constant
 
-var JS string
 var CSS string
 var IndexJS string
 var DataFile string
@@ -10,15 +9,6 @@ var IncludeIndex string
 var IncludeCSS string
 
 func init() {
-	JS = `
-<script>
-	var x = document.getElementsByTagName("P");
-	for (var i = 0; i < x.length; i++) {
-		if (x[i].innerHTML.startsWith("tags:"))
-			x[i].style.backgroundColor = "#ddd";
-	}
-</script>
-`
 	CSS = `
 body {
 	 font:13.34px helvetica,arial,freesans,clean,sans-serif;
@@ -247,14 +237,13 @@ var populateIndex = function(specs) {
 		return;
 	}
 	var text = "<ul>";
-	for (var spec in specs) {
-		var info = JSON.parse(spec);
-		text += "<li><a href=\"" + info["path"] + "\">" + info["name"]  + "</a><ul>";
-		specs[spec].forEach(function(scn) {
+	specs.forEach(function(spec) {
+		text += "<li><a href=\"" + spec["path"] + "\">" + spec["name"]  + "</a><ol>";
+		spec.scenarios.forEach(function(scn) {
 			text += "<li>" + scn["name"] + "</li>";
 		})
-		text += "</ul></li>";
-	}
+		text += "</ol></li>";
+	});
 	text += "</ul></div>";
 	document.getElementsByClassName("specs")[0].innerHTML = text;
 }
@@ -272,19 +261,22 @@ var filterSpecs = function(tagExp) {
 	tags = getTagsWithoutOperators(tagExp).map(function(e) {
 		return e.replace("!", "")
 	})
-	newSpecs = {}
-	for (var spec in specs) {
-		var scenarios = []
-		specs[spec].forEach(function(scn) {
-			var newTagExp = tagExp
+	newSpecs = [];
+	specs.forEach(function(spec) {
+		var scenarios = [];
+		spec.scenarios.forEach(function(scn) {
+			var newTagExp = tagExp;
 			newTagExp = replace(newTagExp, scn.tags.filter(function(t) {
-				return t !== ""
-			}), "true")
-			newTagExp = replace(newTagExp, tags, "false")
-			if (eval(newTagExp)) scenarios.push(scn)
-		})
-		if (scenarios.length > 0) newSpecs[spec] = scenarios
-	}
+				return t !== "";
+			}), "true");
+			newTagExp = replace(newTagExp, tags, "false");
+			if (eval(newTagExp)) scenarios.push(scn);
+		});
+		if (scenarios.length > 0) {
+			spec.scenarios = scenarios;
+			newSpecs.push(spec);
+		}
+	});
 	return newSpecs;
 }
 var replace = function(tagExp, tags, replaceString) {
