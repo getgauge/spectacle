@@ -8,6 +8,14 @@ Install through Gauge
 gauge --install m2h
 ```
 
+Export to HTML
+--------------
+Run the following command to export to HTML in a Gauge project
+
+```
+gauge --docs m2h <path to specs dir>
+```
+
 Build from Source
 -----------------
 
