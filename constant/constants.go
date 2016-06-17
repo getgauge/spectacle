@@ -319,7 +319,7 @@ populateIndex(specs);
 
 	IndexContent = `<center>
 <h1><u>%s</u></h1>
-	<input type="text" class="tags" placeholder="Add tags to filter..." onkeypress="handle(event)"></input>
+	<input type="text" class="tags" placeholder="Add tag Expression to filter specs/scenarios. Example: 'login & product | !customer'" onkeypress="handle(event)"></input>
 </center>
 <div class="specs"></div>
 `
