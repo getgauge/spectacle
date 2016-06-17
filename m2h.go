@@ -57,6 +57,7 @@ func main() {
 		convertFile(file, files, i, &lastSpec)
 	}
 	createIndex()
+	fmt.Println("Succesfully converted specs to html. Open docs/html/index.html")
 }
 
 func convertFile(file string, files []string, index int, lastSpec *string) {
