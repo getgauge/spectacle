@@ -31,12 +31,14 @@ const (
 )
 
 func init() {
-	docsDir = filepath.Join(os.Getenv(gaugeProjectRoot), docs)
-	outDir = filepath.Join(os.Getenv(gaugeProjectRoot), docs, out)
+	projectRoot = os.Getenv(gaugeProjectRoot)
+	docsDir = filepath.Join(projectRoot, docs)
+	outDir = filepath.Join(projectRoot, docs, out)
 }
 
 var docsDir string
 var outDir string
+var projectRoot string
 
 func main() {
 	var files []string
@@ -79,7 +81,7 @@ func convertFile(file string, files []string, index int, lastSpec *string) {
 
 func createIndex() {
 	f, _ := os.Create(outDir + string(filepath.Separator) + indexFile)
-	input := constant.IncludeCSS + constant.DataFile + constant.IndexContent + constant.IndexJS
+	input := constant.IncludeCSS + constant.DataFile + fmt.Sprintf(constant.IndexContent, filepath.Base(projectRoot)) + constant.IndexJS
 	f.WriteString(input)
 	f.Close()
 }
