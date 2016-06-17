@@ -1,0 +1,53 @@
+M2H
+===
+Generates HTML from Specification/Markdown files. This is a plugin for [gauge](http://getgauge.io).
+
+Install through Gauge
+---------------------
+```
+gauge --install m2h
+```
+
+Build from Source
+-----------------
+
+### Requirements
+* [Golang](http://golang.org/)
+
+### Compiling
+
+```
+go run build/make.go
+```
+
+For cross-platform compilation
+
+```
+go run build/make.go --all-platforms
+```
+
+### Installing
+After compilation
+
+```
+go run build/make.go --install
+```
+
+### Creating distributable
+
+Note: Run after compiling
+
+```
+go run build/make.go --distro
+```
+
+For distributable across platforms: Windows and Linux for both x86 and x86_64
+
+```
+go run build/make.go --distro --all-platforms
+```
+License
+-------
+
+![GNU Public License version 3.0](http://www.gnu.org/graphics/gplv3-127x51.png)
+`M2H` is released under [GNU Public License version 3.0](http://www.gnu.org/licenses/gpl-3.0.txt)
