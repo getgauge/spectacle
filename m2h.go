@@ -10,7 +10,7 @@ import (
 	"github.com/getgauge/M2H/constant"
 	"github.com/getgauge/M2H/json"
 	"github.com/getgauge/M2H/processor"
-	"github.com/getgauge/M2H/spec"
+	"github.com/getgauge/M2H/util"
 	"github.com/golang-commonmark/markdown"
 )
 
@@ -43,7 +43,7 @@ var projectRoot string
 func main() {
 	var files []string
 	for _, arg := range strings.Split(os.Getenv(gaugeSpecsDir), space) {
-		files = append(files, spec.GetFiles(arg)...)
+		files = append(files, util.GetFiles(arg)...)
 	}
 	p, _ := processor.NewMessageProcessor(localhost, os.Getenv(gaugeApiPort))
 	msg, _ := p.GetSpecs()

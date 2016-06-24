@@ -9,6 +9,7 @@ import (
 
 	"github.com/getgauge/M2H/constant"
 	"github.com/getgauge/M2H/gauge_messages"
+	"github.com/getgauge/M2H/util"
 	"github.com/golang/protobuf/proto"
 )
 
@@ -41,6 +42,9 @@ func sortSpecs(specs []*gauge_messages.ProtoSpec, files []string) []*gauge_messa
 		specsMap[spec.GetFileName()] = spec
 	}
 	for _, file := range files {
+		if util.IsConceptFile(file) {
+			continue
+		}
 		spec, ok := specsMap[file]
 		if !ok {
 			spec = &gauge_messages.ProtoSpec{FileName: proto.String(file), Tags: make([]string, 0), Items: make([]*gauge_messages.ProtoItem, 0)}
