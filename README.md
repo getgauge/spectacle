@@ -1,11 +1,11 @@
-M2H
-===
+Spectacle
+=========
 Generates HTML from Specification/Markdown files. This is a plugin for [gauge](http://getgauge.io).
 
 Install through Gauge
 ---------------------
 ```
-gauge --install m2h
+gauge --install spectacle
 ```
 
 Export to HTML
@@ -13,7 +13,7 @@ Export to HTML
 Run the following command to export to HTML in a Gauge project
 
 ```
-gauge --docs m2h <path to specs dir>
+gauge --docs spectacle <path to specs dir>
 ```
 
 Build from Source
@@ -58,4 +58,4 @@ License
 -------
 
 ![GNU Public License version 3.0](http://www.gnu.org/graphics/gplv3-127x51.png)
-`M2H` is released under [GNU Public License version 3.0](http://www.gnu.org/licenses/gpl-3.0.txt)
+`Spectacle` is released under [GNU Public License version 3.0](http://www.gnu.org/licenses/gpl-3.0.txt)

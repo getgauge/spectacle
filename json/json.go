@@ -7,9 +7,9 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/getgauge/M2H/constant"
-	"github.com/getgauge/M2H/gauge_messages"
-	"github.com/getgauge/M2H/util"
+	"github.com/getgauge/spectacle/constant"
+	"github.com/getgauge/spectacle/gauge_messages"
+	"github.com/getgauge/spectacle/util"
 	"github.com/golang/protobuf/proto"
 )
 

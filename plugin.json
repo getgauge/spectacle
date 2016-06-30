@@ -1,7 +1,7 @@
 {
-    "id" : "m2h",
+    "id" : "spectacle",
     "version" : "0.0.1",
-    "name" : "M2H",
+    "name" : "Spectacle",
     "description" : "Markdown to HTML",
     "install": {
         "windows": [],
@@ -9,9 +9,9 @@
         "darwin": []
     },
     "command" : {
-        "windows" : ["m2h"],
-        "linux" : ["m2h"],
-        "darwin" : ["m2h"]
+        "windows" : ["spectacle"],
+        "linux" : ["spectacle"],
+        "darwin" : ["spectacle"]
     },
     "scope" : ["documentation"],
     "gaugeVersionSupport": {

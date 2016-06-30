@@ -7,10 +7,10 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/getgauge/M2H/constant"
-	"github.com/getgauge/M2H/json"
-	"github.com/getgauge/M2H/processor"
-	"github.com/getgauge/M2H/util"
+	"github.com/getgauge/spectacle/constant"
+	"github.com/getgauge/spectacle/json"
+	"github.com/getgauge/spectacle/processor"
+	"github.com/getgauge/spectacle/util"
 	"github.com/golang-commonmark/markdown"
 )
 

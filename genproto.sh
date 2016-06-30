@@ -28,5 +28,5 @@ sed  -i.backup '/import gauge_messages1 "spec.pb"/d' gauge_messages/spec.pb.go &
 sed  -i.backup '/import gauge_messages1 "spec.pb"/d' gauge_messages/api.pb.go && sed  -i.backup 's/gauge_messages1.//g' gauge_messages/api.pb.go && rm gauge_messages/api.pb.go.backup
 
 sed -i.backup '/import "."/d' gauge_messages/spec.pb.go && rm gauge_messages/spec.pb.go.backup
-go fmt github.com/getgauge/M2H/...
+go fmt github.com/getgauge/spectacle/...
 

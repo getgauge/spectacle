@@ -23,7 +23,7 @@ import (
 	"net"
 	"time"
 
-	"github.com/getgauge/M2H/gauge_messages"
+	"github.com/getgauge/spectacle/gauge_messages"
 	"github.com/golang/protobuf/proto"
 )
 
