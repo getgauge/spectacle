@@ -1,15 +1,6 @@
 package constant
 
-var CSS string
-var IndexJS string
-var DataFile string
-var IndexJSContent string
-var IndexContent string
-var IncludeIndex string
-var IncludeCSS string
-
-func init() {
-	CSS = `
+var CSS = `
 body {
 	 font:13.34px helvetica,arial,freesans,clean,sans-serif;
 	 color:black;
@@ -228,9 +219,9 @@ ul#navigation .nav {
 	margin: 5px;
 }
 `
-	IndexJS = `<script src="index.js"></script>`
+var IndexJS = `<script src="index.js"></script>`
 
-	IndexJSContent = `
+var IndexJSContent = `
 var statsTemplate = '<p><table style="text-align:center;margin-left: auto;margin-right: auto;border-collapse: separate;">\
 	<th style="border: none !important;">Specifications</th>\
 	<th style="border: none !important;">Scenarios</th>\
@@ -317,15 +308,14 @@ var getTagsWithoutOperators = function(tagExp) {
 populateIndex(specs);
 `
 
-	IndexContent = `<center>
+var IndexContent = `<center>
 <h1><u>%s</u></h1>
 	<input type="text" class="tags" placeholder="Add tag Expression to filter specs/scenarios. Example: 'login & product | !customer'" onkeypress="handle(event)"></input>
 </center>
 <div class="specs"></div>
 `
-	DataFile = `<script src="data.js"></script>`
+var DataFile = `<script src="data.js"></script>`
 
-	IncludeIndex = "<li class=\"nav\"><a href=\"index.html\">=</a></li>"
+var IncludeIndex = "<li class=\"nav\"><a href=\"index.html\">=</a></li>"
 
-	IncludeCSS = `<link rel="stylesheet" type="text/css" href="style.css">`
-}
+var IncludeCSS = `<link rel="stylesheet" type="text/css" href="style.css">`

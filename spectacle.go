@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/getgauge/spectacle/constant"
+	"github.com/getgauge/spectacle/gauge_messages"
 	"github.com/getgauge/spectacle/json"
 	"github.com/getgauge/spectacle/processor"
 	"github.com/getgauge/spectacle/util"
@@ -46,11 +47,11 @@ func main() {
 		files = append(files, util.GetFiles(arg)...)
 	}
 	p, _ := processor.NewMessageProcessor(localhost, os.Getenv(gaugeApiPort))
-	msg, _ := p.GetSpecs()
+	msg, _ := p.GetSpecsResponse()
 	p.Connection.Close()
 	os.Mkdir(docsDir, 0755)
 	os.Mkdir(outDir, 0755)
-	json.WriteJS(msg.AllSpecsResponse.Specs, files, outDir, html)
+	json.WriteJS(getSpecs(msg.SpecsResponse), files, outDir, html)
 	writeCSS()
 	var lastSpec string
 	for i, file := range files {
@@ -58,6 +59,15 @@ func main() {
 	}
 	createIndex()
 	fmt.Println("Succesfully converted specs to html. Open docs/html/index.html")
+}
+func getSpecs(m *gauge_messages.SpecsResponse) []*gauge_messages.ProtoSpec {
+	specs := make([]*gauge_messages.ProtoSpec, 0)
+	for _, d := range m.Details {
+		if d.Spec != nil {
+			specs = append(specs, d.Spec)
+		}
+	}
+	return specs
 }
 
 func convertFile(file string, files []string, index int, lastSpec *string) {

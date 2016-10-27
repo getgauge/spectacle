@@ -40,10 +40,10 @@ func NewMessageProcessor(host string, port string) (*MessageProcessor, error) {
 	}
 }
 
-func (p *MessageProcessor) GetSpecs() (*gauge_messages.APIMessage, error) {
+func (p *MessageProcessor) GetSpecsResponse() (*gauge_messages.APIMessage, error) {
 	id := time.Now().UnixNano()
-	mType := gauge_messages.APIMessage_GetAllSpecsRequest
-	message := &gauge_messages.APIMessage{AllSpecsRequest: &gauge_messages.GetAllSpecsRequest{}, MessageType: &mType, MessageId: &id}
+	mType := gauge_messages.APIMessage_SpecsRequest
+	message := &gauge_messages.APIMessage{SpecsRequest: &gauge_messages.SpecsRequest{}, MessageType: &mType, MessageId: &id}
 	data, err := proto.Marshal(message)
 	if err != nil {
 		return nil, err

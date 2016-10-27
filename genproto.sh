@@ -20,8 +20,7 @@
 #Using protoc version 2.5.0
 
 cd gauge-proto
-PATH=$PATH:$GOPATH/bin protoc --go_out=../gauge_messages spec.proto
-PATH=$PATH:$GOPATH/bin protoc --go_out=../gauge_messages api.proto
+PATH=$PATH:$GOPATH/bin protoc --go_out=../gauge_messages spec.proto api.proto
 
 cd ..
 sed  -i.backup '/import gauge_messages1 "spec.pb"/d' gauge_messages/spec.pb.go && sed  -i.backup 's/gauge_messages1.//g' gauge_messages/spec.pb.go && rm gauge_messages/spec.pb.go.backup
