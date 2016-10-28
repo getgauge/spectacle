@@ -16,30 +16,19 @@ import (
 )
 
 const (
-	html             = ".html"
-	out              = "html"
-	docs             = "docs"
-	localhost        = "localhost"
-	gaugeSpecsDir    = "GAUGE_SPEC_DIRS"
-	gaugeApiPort     = "GAUGE_API_PORT"
-	space            = " "
-	indexFile        = "index.html"
-	quotes           = `""''`
-	linkTemplate     = "<li class=\"nav\"><a href=\"%s\">%s</a></li>"
-	gaugeProjectRoot = "GAUGE_PROJECT_ROOT"
-	htmlTemplate     = `%s%s<ul id="navigation"><center>%s%s%s</center>`
-	styleCSS         = "style.css"
+	html          = ".html"
+	localhost     = "localhost"
+	gaugeSpecsDir = "GAUGE_SPEC_DIRS"
+	gaugeApiPort  = "GAUGE_API_PORT"
+	space         = " "
+	indexFile     = "index.html"
+	quotes        = `""''`
+	linkTemplate  = "<li class=\"nav\"><a href=\"%s\">%s</a></li>"
+	htmlTemplate  = `%s%s<ul id="navigation"><center>%s%s%s</center>`
+	styleCSS      = "style.css"
 )
 
-func init() {
-	projectRoot = os.Getenv(gaugeProjectRoot)
-	docsDir = filepath.Join(projectRoot, docs)
-	outDir = filepath.Join(projectRoot, docs, out)
-}
-
-var docsDir string
-var outDir string
-var projectRoot string
+var outDir = util.GetOutDir()
 
 func main() {
 	var files []string
@@ -49,8 +38,7 @@ func main() {
 	p, _ := processor.NewMessageProcessor(localhost, os.Getenv(gaugeApiPort))
 	msg, _ := p.GetSpecsResponse()
 	p.Connection.Close()
-	os.Mkdir(docsDir, 0755)
-	os.Mkdir(outDir, 0755)
+	util.CreateDirectory(outDir)
 	json.WriteJS(getSpecs(msg.SpecsResponse), files, outDir, html)
 	writeCSS()
 	var lastSpec string
@@ -58,8 +46,9 @@ func main() {
 		convertFile(file, files, i, &lastSpec)
 	}
 	createIndex()
-	fmt.Println("Succesfully converted specs to html. Open docs/html/index.html")
+	fmt.Printf("Succesfully converted specs to html => %s\n", outDir)
 }
+
 func getSpecs(m *gauge_messages.SpecsResponse) []*gauge_messages.ProtoSpec {
 	specs := make([]*gauge_messages.ProtoSpec, 0)
 	for _, d := range m.Details {
@@ -92,7 +81,7 @@ func convertFile(file string, files []string, index int, lastSpec *string) {
 
 func createIndex() {
 	f, _ := os.Create(outDir + string(filepath.Separator) + indexFile)
-	input := constant.IncludeCSS + constant.DataFile + fmt.Sprintf(constant.IndexContent, filepath.Base(projectRoot)) + constant.IndexJS
+	input := constant.IncludeCSS + constant.DataFile + fmt.Sprintf(constant.IndexContent, filepath.Base(util.GetProjectRoot())) + constant.IndexJS
 	f.WriteString(input)
 	f.Close()
 }

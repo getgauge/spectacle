@@ -1,6 +1,7 @@
 package util
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 )
@@ -63,4 +64,11 @@ func GetFiles(path string) []string {
 		specFiles = append(specFiles, f)
 	}
 	return specFiles
+}
+
+func CreateDirectory(dir string) {
+	if err := os.MkdirAll(dir, 0755); err != nil {
+		fmt.Printf("Failed to create directory %s: %s\n", dir, err)
+		os.Exit(1)
+	}
 }
