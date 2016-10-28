@@ -13,6 +13,8 @@ import (
 	"github.com/golang/protobuf/proto"
 )
 
+var projectRoot = util.GetProjectRoot()
+
 type specInfo struct {
 	Path      string         `json:"path"`
 	Name      string         `json:"name"`
@@ -27,10 +29,12 @@ type scenarioInfo struct {
 func WriteJS(specs []*gauge_messages.ProtoSpec, files []string, outDir string, fileExtn string) {
 	specs = sortSpecs(specs, files)
 	specScenariosMap, tags := getSpecsScenariosMap(specs, fileExtn)
-	f, _ := os.Create(outDir + string(filepath.Separator) + "data.js")
+	f, err := os.Create(outDir + string(filepath.Separator) + "data.js")
+	util.Fatal("Unable to create data.js file", err)
 	f.WriteString(fmt.Sprintf("%s\n%s", tags, specScenariosMap))
 	f.Close()
-	f, _ = os.Create(outDir + string(filepath.Separator) + "index.js")
+	f, err = os.Create(outDir + string(filepath.Separator) + "index.js")
+	util.Fatal("Unable to create index.js file", err)
 	f.WriteString(constant.IndexJSContent)
 	f.Close()
 }
@@ -58,7 +62,8 @@ func getSpecsScenariosMap(specs []*gauge_messages.ProtoSpec, fileExtn string) (s
 	var specsInfos []specInfo
 	tags := make(map[string]bool)
 	for _, spec := range specs {
-		fileName := strings.TrimSuffix(filepath.Base(spec.GetFileName()), filepath.Ext(spec.GetFileName()))
+		relPath, _ := filepath.Rel(projectRoot, spec.GetFileName())
+		fileName := strings.TrimSuffix(relPath, filepath.Ext(spec.GetFileName()))
 		si := specInfo{Path: fileName + fileExtn, Name: spec.GetSpecHeading(), Scenarios: make([]scenarioInfo, 0)}
 		addTags(spec.Tags, tags)
 		for _, item := range spec.Items {
@@ -73,12 +78,12 @@ func getSpecsScenariosMap(specs []*gauge_messages.ProtoSpec, fileExtn string) (s
 		}
 		specsInfos = append(specsInfos, si)
 	}
-	json, err := json.Marshal(specsInfos)
+	j, err := json.Marshal(specsInfos)
 	if err != nil {
-		fmt.Println("Cannot convert specs to HTML. Reason: %s", err.Error())
+		fmt.Printf("Cannot convert specs to HTML. Reason: %s\n", err.Error())
 		return "", ""
 	}
-	return fmt.Sprintf("var specs = %s", string(json)), fmt.Sprintf("var tags = [%s]", strings.Join(getUniqueTags(tags), ", "))
+	return fmt.Sprintf("var specs = %s", string(j)), fmt.Sprintf("var tags = [%s]", strings.Join(getUniqueTags(tags), ", "))
 }
 
 func addTags(tags []string, tagsMap map[string]bool) {

@@ -44,3 +44,10 @@ func GetOutDir() string {
 func GetProjectRoot() string {
 	return projectRoot
 }
+
+func Fatal(message string, err error) {
+	if err != nil {
+		fmt.Printf("%s. Error: %s", message, err.Error())
+		os.Exit(1)
+	}
+}

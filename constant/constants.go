@@ -315,7 +315,3 @@ var IndexContent = `<center>
 <div class="specs"></div>
 `
 var DataFile = `<script src="data.js"></script>`
-
-var IncludeIndex = "<li class=\"nav\"><a href=\"index.html\">=</a></li>"
-
-var IncludeCSS = `<link rel="stylesheet" type="text/css" href="style.css">`

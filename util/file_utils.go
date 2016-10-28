@@ -34,7 +34,7 @@ func findFilesInDir(dirPath string, isValidFile func(path string) bool) []string
 }
 
 func findFilesIn(dirRoot string, isValidFile func(path string) bool) []string {
-	absRoot, _ := filepath.Abs(dirRoot)
+	absRoot := getAbsPath(dirRoot)
 	files := findFilesInDir(absRoot, isValidFile)
 	return files
 }
@@ -60,15 +60,18 @@ func GetFiles(path string) []string {
 	if dirExists(path) {
 		specFiles = append(specFiles, findFilesIn(path, isValidSpecExtension)...)
 	} else if fileExists(path) && isValidSpecExtension(path) {
-		f, _ := filepath.Abs(path)
-		specFiles = append(specFiles, f)
+		specFiles = append(specFiles, getAbsPath(path))
 	}
 	return specFiles
 }
 
 func CreateDirectory(dir string) {
-	if err := os.MkdirAll(dir, 0755); err != nil {
-		fmt.Printf("Failed to create directory %s: %s\n", dir, err)
-		os.Exit(1)
-	}
+	err := os.MkdirAll(dir, 0755)
+	Fatal(fmt.Sprintf("Failed to create directory %s", dir), err)
+}
+
+func getAbsPath(path string) string {
+	f, err := filepath.Abs(path)
+	Fatal("Cannot get absolute path", err)
+	return f
 }
