@@ -1,5 +1,8 @@
 Spectacle
 =========
+
+[ ![Download Nightly](https://api.bintray.com/packages/gauge/spectacle/Nightly/images/download.svg) ](https://bintray.com/gauge/spectacle/Nightly/_latestVersion)
+
 Generates HTML from Specification/Markdown files. This is a plugin for [gauge](http://getgauge.io).
 
 Install through Gauge
