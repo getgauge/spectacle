@@ -28,7 +28,7 @@ var outDir = util.GetOutDir()
 var projectRoot = util.GetProjectRoot()
 
 func ConvertFile(file string, files []string, index int) {
-	md := markdown.New(markdown.XHTMLOutput(true), markdown.Nofollow(true), markdown.Quotes(quotes))
+	md := markdown.New(markdown.XHTMLOutput(true), markdown.Nofollow(true), markdown.Quotes(quotes), markdown.Typographer(false))
 	input, err := ioutil.ReadFile(file)
 	util.Fatal(fmt.Sprintf("Error while reading %s file", file), err)
 	output := md.RenderToString(input)
