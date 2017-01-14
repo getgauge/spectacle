@@ -10,7 +10,6 @@ import (
 	"github.com/getgauge/spectacle/constant"
 	"github.com/getgauge/spectacle/gauge_messages"
 	"github.com/getgauge/spectacle/util"
-	"github.com/golang/protobuf/proto"
 )
 
 var projectRoot = util.GetProjectRoot()
@@ -51,7 +50,7 @@ func sortSpecs(specs []*gauge_messages.ProtoSpec, files []string) []*gauge_messa
 		}
 		spec, ok := specsMap[file]
 		if !ok {
-			spec = &gauge_messages.ProtoSpec{FileName: proto.String(file), Tags: make([]string, 0), Items: make([]*gauge_messages.ProtoItem, 0)}
+			spec = &gauge_messages.ProtoSpec{FileName: file, Tags: make([]string, 0), Items: make([]*gauge_messages.ProtoItem, 0)}
 		}
 		sortedSpecs = append(sortedSpecs, spec)
 	}

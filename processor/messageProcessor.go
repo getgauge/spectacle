@@ -43,7 +43,7 @@ func NewMessageProcessor(host string, port string) (*MessageProcessor, error) {
 func (p *MessageProcessor) GetSpecsResponse() (*gauge_messages.APIMessage, error) {
 	id := time.Now().UnixNano()
 	mType := gauge_messages.APIMessage_SpecsRequest
-	message := &gauge_messages.APIMessage{SpecsRequest: &gauge_messages.SpecsRequest{}, MessageType: &mType, MessageId: &id}
+	message := &gauge_messages.APIMessage{SpecsRequest: &gauge_messages.SpecsRequest{}, MessageType: mType, MessageId: id}
 	data, err := proto.Marshal(message)
 	if err != nil {
 		return nil, err
