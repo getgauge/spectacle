@@ -3,6 +3,7 @@ Spectacle
 
 [ ![Download Nightly](https://api.bintray.com/packages/gauge/spectacle/Nightly/images/download.svg) ](https://bintray.com/gauge/spectacle/Nightly/_latestVersion)
 [![Build Status](https://app.snap-ci.com/getgauge/spectacle/branch/master/build_image)](https://app.snap-ci.com/getgauge/spectacle/branch/master)
+[![Build Status](https://travis-ci.org/getgauge/spectacle.svg?branch=master)](https://travis-ci.org/getgauge/spectacle)
 
 Generates HTML from Specification/Markdown files. This is a plugin for [gauge](http://getgauge.io).
 
