@@ -1,6 +1,6 @@
 {
     "id" : "spectacle",
-    "version" : "0.0.3",
+    "version" : "0.1.0",
     "name" : "Spectacle",
     "description" : "Markdown to HTML",
     "install": {
@@ -15,7 +15,7 @@
     },
     "scope" : ["documentation"],
     "gaugeVersionSupport": {
-        "minimum": "0.4.1",
+        "minimum": "0.8.0",
         "maximum": ""
     }
 }
