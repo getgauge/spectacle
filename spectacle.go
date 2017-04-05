@@ -43,7 +43,7 @@ func main() {
 		conv.ConvertFile(file, files, i)
 	}
 	createIndex()
-	fmt.Printf("Succesfully converted specs to html => %s\n", outDir)
+	fmt.Printf("Succesfully converted specs to html => %s\n", filepath.Join(outDir, indexFile))
 }
 
 func createIndex() {
