@@ -19,6 +19,7 @@ const (
 	gaugeSpecsDir = "GAUGE_SPEC_DIRS"
 	gaugeApiPort  = "GAUGE_API_PORT"
 	space         = " "
+	fileSeparator = "||"
 	indexFile     = "index.html"
 	styleCSS      = "style.css"
 )
@@ -28,7 +29,7 @@ var projectRoot = util.GetProjectRoot()
 
 func main() {
 	var files []string
-	for _, arg := range strings.Split(os.Getenv(gaugeSpecsDir), space) {
+	for _, arg := range strings.Split(os.Getenv(gaugeSpecsDir), fileSeparator) {
 		files = append(files, util.GetFiles(arg)...)
 	}
 	p, err := processor.NewMessageProcessor(localhost, os.Getenv(gaugeApiPort))
@@ -50,9 +51,9 @@ func createIndex() {
 	f, err := os.Create(outDir + string(filepath.Separator) + indexFile)
 	util.Fatal("Unable to create index.html", err)
 	style := fmt.Sprintf(conv.IncludeCSS, conv.StyleCSS)
-	header := fmt.Sprintf(constant.IndexContent, filepath.Base(projectRoot))
+	header := fmt.Sprintf(constant.IndexContent, strings.Title(filepath.Base(projectRoot)))
 	input := style + constant.DataFile + header + constant.IndexJS
-	f.WriteString(input)
+	f.WriteString("<article class='markdown-body'>" + input + "</article>")
 	f.Close()
 }
 
