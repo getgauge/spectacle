@@ -10,7 +10,7 @@ Generates HTML from Specification/Markdown files. This is a plugin for [gauge](h
 Install through Gauge
 ---------------------
 ```
-gauge --install spectacle
+gauge install spectacle
 ```
 
 Export to HTML
@@ -18,7 +18,7 @@ Export to HTML
 Run the following command to export to HTML in a Gauge project
 
 ```
-gauge --docs spectacle <path to specs dir>
+gauge docs spectacle <path to specs dir>
 ```
 
 Build from Source
