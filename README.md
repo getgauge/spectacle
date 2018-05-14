@@ -7,27 +7,39 @@ Spectacle
 
 Generates HTML from Specification/Markdown files. This is a plugin for [gauge](http://getgauge.io).
 
-Install through Gauge
----------------------
+<img src="https://github.com/getgauge/spectacle/raw/master/images/spectacle.png" alt="Spectacle" style="width: 600px;"/>
+
+
+Installation
+------------
+
 ```
 gauge install spectacle
 ```
-
-Export to HTML
---------------
-Run the following command to export to HTML in a Gauge project
+To install a specific version of spectacle plugin use the ``--version`` flag.
 
 ```
-gauge docs spectacle <path to specs dir>
+gauge install spectacle --version $VERSION
 ```
 
-Build from Source
------------------
+### Offline Installation
 
-### Requirements
+Download the plugin zip from the [Github Releases](https://github.com/getgauge/spectacle/releases).
+
+use the ``--file`` or ``-f`` flag to install the plugin from  zip file.
+
+```
+gauge install spectacle --file ZIP_FILE_PATH
+```
+
+
+
+### Build from Source
+
+#### Requirements
 * [Golang](http://golang.org/)
 
-### Compiling
+#### Compiling
 
 ```
 go run build/make.go
@@ -39,7 +51,7 @@ For cross-platform compilation
 go run build/make.go --all-platforms
 ```
 
-### Installing
+#### Installing
 After compilation
 
 ```
@@ -59,6 +71,33 @@ For distributable across platforms: Windows and Linux for both x86 and x86_64
 ```
 go run build/make.go --distro --all-platforms
 ```
+
+Usage
+-----
+
+**Export to HTML**
+
+Run the following command to export to HTML in a Gauge project
+
+```
+gauge docs spectacle <path to specs dir>
+```
+
+The html docs are generated in `docs` directory inside the project.
+
+**Filter Specification/Scenario based on Tags**
+
+Tags allow you to filter the specs and scenarios. Add the tags to the
+textbox in the report to view all the specs and scenarios which are
+labeled with certain tags. Tag expressions with operators ``|``, ``&``,
+``!`` are supported.
+
+In the following image, the specs/scenarios are filtered using a tag expression(\ ``refactoring & !api``).
+
+<img src="https://github.com/getgauge/spectacle/raw/master/images/filter_tags.png" alt="filter" style="width: 600px;"/>
+
+
+
 License
 -------
 
