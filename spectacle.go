@@ -53,7 +53,7 @@ func createIndex() {
 	style := fmt.Sprintf(conv.IncludeCSS, conv.StyleCSS)
 	header := fmt.Sprintf(constant.IndexContent, strings.Title(filepath.Base(projectRoot)))
 	input := style + constant.DataFile + header + constant.IndexJS
-	f.WriteString("<article class='markdown-body'>" + input + "</article>")
+	f.WriteString("<article class='markdown-body'><meta charset=\"utf-8\">" + input + "</article>")
 	f.Close()
 }
 

@@ -47,7 +47,7 @@ func ConvertFile(file string, files []string, index int) {
 	name := strings.TrimSuffix(relPath, filepath.Ext(relPath)) + dotHtml
 	f, err := os.Create(filepath.Join(outDir, name))
 	util.Fatal(fmt.Sprintf("Error while creating %s file", filepath.Join(outDir, name)), err)
-	f.Write([]byte("<article class='markdown-body'>" + output + "</article>"))
+	f.Write([]byte("<article class='markdown-body'><meta charset=\"utf-8\">" + output + "</article>"))
 	f.Close()
 }
 
