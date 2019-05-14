@@ -3,6 +3,7 @@ Spectacle
 
 [ ![Download Nightly](https://api.bintray.com/packages/gauge/spectacle/Nightly/images/download.svg) ](https://bintray.com/gauge/spectacle/Nightly/_latestVersion)
 [![Build Status](https://travis-ci.org/getgauge/spectacle.svg?branch=master)](https://travis-ci.org/getgauge/spectacle)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v1.4%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
 
 Generates HTML from Specification/Markdown files. This is a plugin for [gauge](http://getgauge.io).
 
