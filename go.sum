@@ -1,0 +1,12 @@
+github.com/golang-commonmark/html v0.0.0-20180910111043-7d7c804e1d46 h1:FeNEDxIy7XouGTJKiJ9Ze5vUbcAIW/FRhQbtKBNmEz8=
+github.com/golang-commonmark/html v0.0.0-20180910111043-7d7c804e1d46/go.mod h1:LVbxopYhspqklDpfaS/qDc6HhWwkpF1ptTj3vMFRoSQ=
+github.com/golang-commonmark/linkify v0.0.0-20180910111149-f05efb453a0e h1:TkuRzcq232K5ytXtQ+BPicsjYWZgt/lS6gJ5HqcUifQ=
+github.com/golang-commonmark/linkify v0.0.0-20180910111149-f05efb453a0e/go.mod h1:LeGY+WmPag1dlC0xKy+xYXommuQLX0O9gGXOP8SdBmY=
+github.com/golang-commonmark/markdown v0.0.0-20180910011815-a8f139058164 h1:YaQaotRjMcVth1VzHUEQlD2oeyQAglA7CXdxp9QLvKM=
+github.com/golang-commonmark/markdown v0.0.0-20180910011815-a8f139058164/go.mod h1:TRHkBtRpQJqTtJnCqhNU5oPkZw5pMr8Ac6DHndXYd5k=
+github.com/golang-commonmark/mdurl v0.0.0-20180910110917-8d018c6567d6 h1:XkgfhPs5AotQfcu3EfDEjyAUx91KdtjrxHXYGnZJhoU=
+github.com/golang-commonmark/mdurl v0.0.0-20180910110917-8d018c6567d6/go.mod h1:J66ZGl/dC2mj4ElzGfrLUq0N90HvQoUbrYgYNJUjuMs=
+github.com/golang-commonmark/puny v0.0.0-20180910110745-050be392d8b8 h1:DUgQdQmDg4sk4SfNR+qOkXcopGz36BL02vp/V7WbPQI=
+github.com/golang-commonmark/puny v0.0.0-20180910110745-050be392d8b8/go.mod h1:/8a6mcbf/Hwg6MjnHHp5vqCWw0Bsves9HLPObHAj7XA=
+github.com/golang/protobuf v1.3.2 h1:6nsPYzhq5kReh6QImI3k5qWzO4PEbvbIW2cwSfR/6xs=
+github.com/golang/protobuf v1.3.2/go.mod h1:6lQm79b+lXiMfvg/cZm0SGofjICqVBUtrP5yJMmIC1U=
