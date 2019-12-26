@@ -15,7 +15,10 @@
     },
     "scope" : ["documentation"],
     "gaugeVersionSupport": {
-        "minimum": "0.8.0",
+        "minimum": "1.0.7",
         "maximum": ""
-    }
+    },
+    "capabilities": [
+        "grpc_support"
+    ]
 }

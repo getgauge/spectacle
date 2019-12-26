@@ -51,7 +51,7 @@ func ConvertFile(file string, files []string, index int) {
 	f.Close()
 }
 
-func GetSpecs(m *gauge_messages.SpecsResponse) []*gauge_messages.ProtoSpec {
+func GetSpecs(m *gauge_messages.SpecDetails) []*gauge_messages.ProtoSpec {
 	specs := make([]*gauge_messages.ProtoSpec, 0)
 	for _, d := range m.Details {
 		if d.Spec != nil {
