@@ -59,7 +59,6 @@ func (h *handler) Kill(c context.Context, m *gauge_messages.KillProcessRequest) 
 
 func (h *handler) stopServer() {
 	h.server.Stop()
-	os.Exit(0)
 }
 
 func main() {
@@ -77,6 +76,7 @@ func main() {
 	gauge_messages.RegisterDocumenterServer(server, h)
 	fmt.Println(fmt.Sprintf("Listening on port:%d", l.Addr().(*net.TCPAddr).Port))
 	server.Serve(l)
+	os.Exit(0)
 }
 
 func createIndex() {
