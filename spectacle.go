@@ -1,16 +1,19 @@
 package main
 
 import (
+	"context"
 	"fmt"
+	"net"
 	"os"
 	"path/filepath"
 	"strings"
 
 	"github.com/getgauge/spectacle/constant"
 	"github.com/getgauge/spectacle/conv"
+	"github.com/getgauge/spectacle/gauge_messages"
 	"github.com/getgauge/spectacle/json"
-	"github.com/getgauge/spectacle/processor"
 	"github.com/getgauge/spectacle/util"
+	"google.golang.org/grpc"
 )
 
 const (
@@ -27,24 +30,52 @@ const (
 var outDir = util.GetOutDir()
 var projectRoot = util.GetProjectRoot()
 
-func main() {
+const tenGB = 1024 * 1024 * 1024 * 10
+
+type handler struct {
+	server *grpc.Server
+}
+
+func (h *handler) GenerateDocs(c context.Context, m *gauge_messages.SpecDetails) (*gauge_messages.Empty, error) {
 	var files []string
 	for _, arg := range strings.Split(os.Getenv(gaugeSpecsDir), fileSeparator) {
 		files = append(files, util.GetFiles(arg)...)
 	}
-	p, err := processor.NewMessageProcessor(localhost, os.Getenv(gaugeApiPort))
-	util.Fatal("Cannot connect to Gauge API", err)
-	msg, err := p.GetSpecsResponse()
-	util.Fatal("Cannot connect to Gauge API", err)
-	p.Connection.Close()
 	util.CreateDirectory(outDir)
-	json.WriteJS(conv.GetSpecs(msg.SpecsResponse), files, outDir, dotHtml)
+	json.WriteJS(conv.GetSpecs(m), files, outDir, dotHtml)
 	writeCSS()
 	for i, file := range files {
 		conv.ConvertFile(file, files, i)
 	}
 	createIndex()
 	fmt.Printf("Succesfully converted specs to html => %s\n", filepath.Join(outDir, indexFile))
+	return &gauge_messages.Empty{}, nil
+}
+
+func (h *handler) Kill(c context.Context, m *gauge_messages.KillProcessRequest) (*gauge_messages.Empty, error) {
+	defer h.stopServer()
+	return &gauge_messages.Empty{}, nil
+}
+
+func (h *handler) stopServer() {
+	h.server.Stop()
+}
+
+func main() {
+	os.Chdir(projectRoot)
+	address, err := net.ResolveTCPAddr("tcp", "127.0.0.1:0")
+	if err != nil {
+		util.Fatal("failed to start server.", err)
+	}
+	l, err := net.ListenTCP("tcp", address)
+	if err != nil {
+		util.Fatal("failed to start server.", err)
+	}
+	server := grpc.NewServer(grpc.MaxRecvMsgSize(1024 * 1024 * 10))
+	h := &handler{server: server}
+	gauge_messages.RegisterDocumenterServer(server, h)
+	fmt.Println(fmt.Sprintf("Listening on port:%d", l.Addr().(*net.TCPAddr).Port))
+	server.Serve(l)
 }
 
 func createIndex() {
