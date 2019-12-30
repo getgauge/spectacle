@@ -76,7 +76,6 @@ func main() {
 	gauge_messages.RegisterDocumenterServer(server, h)
 	fmt.Println(fmt.Sprintf("Listening on port:%d", l.Addr().(*net.TCPAddr).Port))
 	server.Serve(l)
-	os.Exit(0)
 }
 
 func createIndex() {
