@@ -1,13 +1,13 @@
-name: Deploy
+name: Release on PR Merge
 
-on: [deployment]
+on: deployment
 
 jobs:
-  deploy:
-    name: Create Draft with assets
-    runs-on: macos-latest
+  release:
+    if: github.event.deployment.environment == 'production'
+    runs-on: ubuntu-latest
     env:
-      GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      GITHUB_TOKEN: "${{ secrets.GAUGEBOT_GITHUB_TOKEN }}"
     steps:
       - name: Set up Go 1.13
         uses: actions/setup-go@v1
@@ -16,22 +16,23 @@ jobs:
         id: go
 
       - name: Check out code into the Go module directory
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
+
+      - name: Install hub
+        uses: geertvdc/setup-hub@master
 
       - name: Build artifacts
         run: |
           go run build/make.go --all-platforms
           go run build/make.go --all-platforms --distro
 
-      - name: Install hub
-        run: brew install hub
-
-      - name: update
+      - name: Release on github
         run: |
           cd bin/distros
           if [ -z "$version" ]; then
             version=$(ls spectacle* | head -1 | sed "s/\.[^\.]*$//" | sed "s/spectacle-//" | sed | sed "s/-[a-z]*\.[a-z0-9_]*$//");
           fi
+          echo "::set-env name=VERSION::$version"
           artifacts=()
           dir=`pwd`
           for i in `ls`; do
@@ -42,10 +43,10 @@ jobs:
           echo "Updating release v$version"
           echo "---------------------------"
           echo -e "Spectacle v$version\n\n" > desc.txt
-          release_description=$(ruby -e "$(curl -sSfL https://github.com/getgauge/gauge/raw/master/build/create_release_text.rb)" spectacle getgauge)
+          release_description=$(ruby -e "$(curl -sSfL https://github.com/getgauge/gauge/raw/master/build/create_release_text.rb)" getgauge spectacle)
           echo "$release_description" >> desc.txt
           echo "Creating new draft for release v$version"
-          hub release create -d -F ./desc.txt "v$version"
+          hub release create -F ./desc.txt "v$version"
           rm -rf desc.txt
           echo "Start uploading assets..."
           for i in `ls $artifacts`; do
@@ -54,16 +55,12 @@ jobs:
                   exit 1
               fi
           done
-      - name: "deployment success"
-        if: success()
-        uses: "deliverybot/status@master"
-        with:
-          state: "success"
-          token: "${{ secrets.GITHUB_TOKEN }}"
 
-      - name: "deployment failure"
-        if: failure()
-        uses: "deliverybot/status@master"
-        with:
-          state: "failure"
-          token: "${{ secrets.GITHUB_TOKEN }}"
+      - name: Update metadata in gauge-repository
+        run: |
+          git clone https://github.com/getgauge/gauge-repository.git
+          cd gauge-repository
+          python update_metadata.py spectacle $VERSION
+          commit_message=$(echo -e "Update spectacle to v$VERSION")
+          git commit -am "$commit_message"
+          git push "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/getgauge/gauge-repository.git" master
