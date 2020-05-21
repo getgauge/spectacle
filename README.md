@@ -101,5 +101,4 @@ In the following image, the specs/scenarios are filtered using a tag expression(
 License
 -------
 
-![GNU Public License version 3.0](http://www.gnu.org/graphics/gplv3-127x51.png)
-`Spectacle` is released under [GNU Public License version 3.0](http://www.gnu.org/licenses/gpl-3.0.txt)
+`Spectacle` is released under the Apache License, Version 2.0. See [LICENSE](LICENSE) for the full license text.
