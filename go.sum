@@ -40,6 +40,7 @@ github.com/getgauge/gauge v1.0.6 h1:Vvu4UqAXGhube4Fy5Ih/W996PQnJCqhQ2MSC7MhwCw4=
 github.com/getgauge/gauge v1.0.6/go.mod h1:pNj206mtWBe6nTkl+TfmlWDauT4cSI0eiDPEi3fjOBY=
 github.com/getgauge/gauge v1.1.4 h1:4wxrGHmhDuYNduuxKzupNHzkqkcOpZCJRYoGQFNp04w=
 github.com/getgauge/gauge v1.1.4/go.mod h1:9Il7VW/L5FUjG6W/L1yv+j43+qLq9Qu3IEbIvgwtVlQ=
+github.com/getgauge/gauge v1.1.5/go.mod h1:9Il7VW/L5FUjG6W/L1yv+j43+qLq9Qu3IEbIvgwtVlQ=
 github.com/ghodss/yaml v1.0.0/go.mod h1:4dBDuWmgqj2HViK6kFavaiC9ZROes6MMH2rRYeMEF04=
 github.com/go-check/check v0.0.0-20190902080502-41f04d3bba15/go.mod h1:9ES+weclKsC9YodN5RgxqK/VD9HM9JsCSh7rNhMZE98=
 github.com/go-kit/kit v0.8.0/go.mod h1:xBxKIO96dXMWWy0MnWVtmwkA9/13aqxPnvrjFYMA2as=
