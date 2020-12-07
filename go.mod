@@ -3,7 +3,7 @@ module github.com/getgauge/spectacle
 go 1.13
 
 require (
-	github.com/getgauge/gauge v1.1.5
+	github.com/getgauge/gauge v1.1.6
 	github.com/golang-commonmark/html v0.0.0-20180910111043-7d7c804e1d46 // indirect
 	github.com/golang-commonmark/linkify v0.0.0-20180910111149-f05efb453a0e // indirect
 	github.com/golang-commonmark/markdown v0.0.0-20180910011815-a8f139058164
