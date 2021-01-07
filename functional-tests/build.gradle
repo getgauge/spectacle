@@ -1,0 +1,38 @@
+plugins {
+    id 'java'
+    id 'org.gauge' version '1.8.1'
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+dependencies {
+    testImplementation 'com.thoughtworks.gauge:gauge-java:+'
+    testImplementation 'junit:junit:4.13.1'
+    testImplementation 'net.sourceforge.htmlunit:htmlunit:2.45.0'
+    testImplementation 'se.fishtank:css-selectors:2.0'
+    testImplementation 'org.jsoup:jsoup:1.13.1'
+    testImplementation 'org.assertj:assertj-core:3.18.1'
+    testImplementation 'org.json:json:20200518'
+}
+
+sourceCompatibility = '1.8'
+
+import com.thoughtworks.gauge.gradle.*
+
+def languages = ['java', 'js','dotnet', 'ruby', 'python']
+
+languages.each {lang ->
+    task "${lang}FT" (type: GaugeTask) {
+        doFirst {
+            gauge {
+                specsDir = 'specs'
+                inParallel = true
+                env = "ci-${lang}"
+                tags = "${lang}"
+            }
+        }
+    }
+}
