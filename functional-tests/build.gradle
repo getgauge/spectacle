@@ -22,16 +22,14 @@ sourceCompatibility = '1.8'
 
 import com.thoughtworks.gauge.gradle.*
 
-def languages = ['java', 'js','dotnet', 'ruby', 'python']
+def languages = ['java']
 
 languages.each {lang ->
-    task "${lang}FT" (type: GaugeTask) {
+    task "ft" (type: GaugeTask) {
         doFirst {
             gauge {
                 specsDir = 'specs'
                 inParallel = true
-                env = "ci-${lang}"
-                tags = "${lang}"
             }
         }
     }

@@ -10,16 +10,6 @@ jobs:
         # no windows because `go run build/make.go --distro` errors (can't find zip executable)
         os: [ubuntu-latest, macos-latest]
         language: [java]
-        include:
-        # macOS tends to be a bit slower, so only run all the other languages on Ubuntu
-          - os: ubuntu-latest
-            language: dotnet
-          - os: ubuntu-latest
-            language: js
-          - os: ubuntu-latest
-            language: python
-          - os: ubuntu-latest
-            language: ruby
       
     steps:
       - name: Set up Go 1.15
@@ -31,17 +21,11 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2
 
-      - name: Set up Python
-        if: matrix.language == 'python'
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.8
-
       - name: Install Gauge
         uses: getgauge/setup-gauge@master
         with:
           gauge-version: master
-          gauge-plugins: ${{ matrix.language }}, html-report, screenshot
+          gauge-plugins: java, html-report, screenshot
 
       - name: Install spectacle
         run: |
@@ -51,7 +35,7 @@ jobs:
       - name: Run FTs
         run: |
           cd functional-tests
-          ./gradlew clean ${{ matrix.language }}FT
+          ./gradlew clean ft
 
       - name: Upload logs
         uses: actions/upload-artifact@v1

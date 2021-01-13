@@ -4,7 +4,7 @@ bin
 .DS_Store
 .gauge
 logs
-reports-java
+reports
 resources
 testLogs
 .classpath

@@ -14,15 +14,7 @@ The functional tests run on every push and pull request, triggered by
 
 - [Install language plugin](https://docs.gauge.org/plugin.html) by running<br>
   ```
-  gauge install {language}
-  ```
-
-  ```
   gauge install java
-  gauge install ruby
-  gauge install dotnet
-  gauge install python
-  gauge install js
   ```
 
 - [Install Spectacle](../README.md#installation)
@@ -33,15 +25,8 @@ The functional tests run on every push and pull request, triggered by
 - Executing specs
 
   ```
-  ./gradlew clean {language}FT # On Linux or Mac
-  gradlew.bat clean {language}FT # On Windows
-  ```
-  ```
-  ./gradlew clean javaFT      # For Windows - gradlew.bat clean javaFT
-  ./gradlew clean javaFT      # For Windows - gradlew.bat clean javaFT
-  ./gradlew clean pythonFT    # For Windows - gradlew.bat clean pythonFT
-  ./gradlew clean rubyFT      # For Windows - gradlew.bat clean rubyFT
-  ./gradlew clean dotnetFT    # For Windows - gradlew.bat clean dotnetFT
+  ./gradlew clean ft # On Linux or Mac
+  gradlew.bat clean ft # On Windows
   ```
 
 This will also compile all the supporting code implementations and run your specs in parallel.
