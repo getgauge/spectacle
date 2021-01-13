@@ -17,7 +17,6 @@ public class SpecificationBuilder {
 
     private String specName;
     private String subDirPath;
-    private String specsDirPath;
     private Table datatable;
 
     public SpecificationBuilder() {
@@ -35,11 +34,6 @@ public class SpecificationBuilder {
     public SpecificationBuilder withScenarioName(String scenarioName) {
         this.tagsBuilder.withScenarioName(scenarioName);
         this.scenarioBuilder.withScenarioName(scenarioName);
-        return this;
-    }
-
-    public SpecificationBuilder withSpecsDirPath(String specsDirPath) {
-        this.specsDirPath = specsDirPath;
         return this;
     }
 

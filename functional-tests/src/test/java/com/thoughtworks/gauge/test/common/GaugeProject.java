@@ -33,7 +33,6 @@ public abstract class GaugeProject {
     private static ThreadLocal<GaugeProject> currentProject = ThreadLocal.withInitial(() -> null);
     private static String executableName = "gauge";
     private static String specsDirName = "specs";
-    private ArrayList<Concept> concepts = new ArrayList<>();
     private File projectDir;
     private String language;
     private ArrayList<Specification> specifications = new ArrayList<>();
@@ -61,8 +60,6 @@ public abstract class GaugeProject {
                 return new JavaProject(projName);
             case "ruby":
                 return new RubyProject(projName);
-            case "csharp":
-                return new CSharpProject(projName);
             case "dotnet":
                 return new DotnetProject(projName);
             case "js":
@@ -72,14 +69,6 @@ public abstract class GaugeProject {
             default:
                 return new UnknownProject(language, projName);
         }
-    }
-
-    public void addConcepts(Concept... newConcepts) {
-        Collections.addAll(concepts, newConcepts);
-    }
-
-    public List<Concept> getConcepts() {
-        return concepts;
     }
 
     public boolean initialize(boolean remoteTemplate) throws Exception {
@@ -154,7 +143,7 @@ public abstract class GaugeProject {
     }
 
     public Specification createSpecification(String specsDirName, String name) throws IOException {
-        String specsDir = StringUtils.isEmpty(specsDirName) ? this.specsDirName : specsDirName;
+        String specsDir = StringUtils.isEmpty(specsDirName) ? GaugeProject.specsDirName : specsDirName;
         File specFile = getSpecFile(name, specsDir);
         if (specFile.exists()) {
             throw new RuntimeException("Failed to create specification with name: " + name + "." + specFile.getAbsolutePath() + ": File already exists");
@@ -181,14 +170,6 @@ public abstract class GaugeProject {
         return getSpecFile(name, "");
     }
 
-    public File createCsv(String name, String dirPath) {
-        return getFile(name, specsDirName, ".csv");
-    }
-
-    public File createTxt(String name, String dirPath) {
-        return getFile(name, specsDirName, ".txt");
-    }
-
     public Specification findSpecification(String specName) {
         for (Specification specification : specifications) {
             if (specification.getName().equalsIgnoreCase(specName)) {
@@ -207,32 +188,7 @@ public abstract class GaugeProject {
         }
         return null;
     }
-
-
-    public Concept createConcept(String name, Table steps) throws Exception {
-        String specDirPath = new File(projectDir, specsDirName).getAbsolutePath();
-        String conceptsDirName = "concepts";
-        File conceptsDir = new File(specDirPath, conceptsDirName);
-        if (!conceptsDir.exists()) {
-            conceptsDir.mkdir();
-        }
-        File conceptFile = new File(conceptsDir, "concept_" + System.nanoTime() + ".cpt");
-        if (conceptFile.exists()) {
-            throw new RuntimeException("Failed to create concept: " + name + "." + conceptFile.getAbsolutePath() + " : File already exists");
-        }
-        Concept concept = new Concept(name);
-        List<String> columnNames = steps.getColumnNames();
-        for (TableRow row : steps.getTableRows()) {
-            concept.addItem(row.getCell(columnNames.get(0)), row.getCell("Type"));
-            if (columnNames.size() == 2) {
-                implementStep(new StepImpl(row.getCell(columnNames.get(0)), row.getCell(columnNames.get(1)), false, false, "", ""));
-            }
-        }
-        concept.saveAs(conceptFile);
-        concepts.add(concept);
-        return concept;
-    }
-
+    
     public boolean executeSpecFolder(String specFolder) throws Exception {
         return executeGaugeCommand(new String[]{"run", "--simple-console", "--verbose", specFolder}, null);
     }
@@ -245,100 +201,10 @@ public abstract class GaugeProject {
         return exitCode;
     }
 
-    public boolean formatSpecFolder(String specFolder) throws Exception {
-        return executeGaugeCommand(new String[]{"format", specFolder}, null);
-    }
-
-    public ExecutionSummary executeFailSafe(boolean sorted) throws Exception {
-        String[] args = sorted ? new String[]{"run","--fail-safe", "--simple-console", "--verbose", "--sort", "specs/"} :
-                new String[]{"run","--fail-safe", "--simple-console", "--verbose", "specs/"};
-        System.out.println(String.join(" ", args));
-        return execute(args, null);
-    }
-
-    public ExecutionSummary execute(boolean sorted) throws Exception {
-        String[] args = sorted ? new String[]{"run", "--simple-console", "--verbose", "--sort", "specs/"} : new String[]{"run", "--simple-console", "--verbose", "specs/"};
-        return execute(args, null);
-    }
-
-    public ExecutionSummary execute(HashMap<String, String> envVars) throws Exception {
-        String[] args = new String[]{"run", "--simple-console", "--verbose", "specs/"};
-        return execute(args, envVars);
-    }
-
-    public ExecutionSummary executeSpecsInOrder(List<String> specNames) throws Exception {
-        ArrayList<String> args = new ArrayList<>(asList("run", "--simple-console", "--verbose"));
-        for (String specName : specNames) {
-            args.add(Util.combinePath(this.specsDirName, specName) + ".spec");
-        }
-        return execute(args.toArray(new String[args.size()]), null);
-    }
-
-    private ExecutionSummary execute(String[] args, HashMap<String, String> envVars) throws Exception {
-        boolean success = executeGaugeCommand(args, envVars);
-        return new ExecutionSummary(String.join(" ", args), success, lastProcessStdout, lastProcessStderr);
-    }
-
-    public ExecutionSummary executeInParallel() throws Exception {
-        return execute(new String[]{"run", "--parallel", "--verbose", "specs/"}, null);
-    }
-
-    public ExecutionSummary executeInSerialAndThenParallel(String tagName, int nStreams) throws Exception {
-        HashMap<String, String> envVars = new HashMap<>();
-        envVars.put("allow_filtered_parallel_execution", "true");
-        return execute(new String[]{"run", "--parallel", "-n=" + nStreams, "--only", tagName}, envVars);
-    }
-
-    public ExecutionSummary executeInParallel(int nStreams) throws Exception {
-        return execute(new String[]{"run", "--parallel", "-n=" + nStreams, "--verbose", "specs/"}, null);
-    }
-
     public ExecutionSummary generateSpectacleDocumentation() throws Exception {
         String[] args = new String[]{"docs", "spectacle", "specs/"};
         boolean success = executeGaugeCommand(args, null);
         return new ExecutionSummary(String.join(" ", args), success, lastProcessStdout, lastProcessStderr);
-    }
-
-    public ExecutionSummary validate() throws Exception {
-        return execute(new String[]{"validate", "specs/"}, null);
-    }
-
-    public ExecutionSummary executeSpec(String specName) throws Exception {
-        return execute(new String[]{"run", "--simple-console", "--verbose", "specs" + File.separator + Util.getSpecName(specName) + ".spec"}, null);
-    }
-
-    public ExecutionSummary repeatLastRun() throws Exception {
-        return execute(new String[]{"run", "--simple-console", "--verbose", "--repeat"}, null);
-    }
-
-    public ExecutionSummary rerunFailed() throws Exception {
-        return execute(new String[]{"run", "--simple-console", "--verbose", "--failed"}, null);
-    }
-
-    public ExecutionSummary executeSpecWithScenarioLineNumber(String specName, int lineNumber) throws Exception {
-        return execute(new String[]{"run", "--simple-console", "--verbose", "specs" + File.separator + Util.getSpecName(specName) + ".spec:" + lineNumber}, null);
-    }
-
-    public ExecutionSummary executeSpecWithRowRange(String specName, String rowRange) throws Exception {
-        return execute(new String[]{"run", "--simple-console", "--verbose", "--table-rows", rowRange, "specs" + File.separator + Util.getSpecName(specName) + ".spec"}, null);
-    }
-
-    public ExecutionSummary executeTagsInSpec(String tags, String specName) throws Exception {
-        return execute(new String[]{"run", "--simple-console", "--verbose", "--tags", tags, "specs" + File.separator + Util.getSpecName(specName) + ".spec"}, null);
-    }
-
-    private Process executeGaugeDaemon(Integer apiPort) throws IOException, InterruptedException {
-        ArrayList<String> command = new ArrayList<>();
-        command.add(executableName);
-        command.add("daemon");
-        command.add(String.valueOf(apiPort));
-        ProcessBuilder processBuilder = new ProcessBuilder(command.toArray(new String[command.size()]));
-        processBuilder.directory(this.projectDir);
-        filterConflictingEnv(processBuilder);
-        processBuilder.environment().put("GAUGE_TELEMETRY_ENABLED", "false");
-        Process process = processBuilder.start();
-        Thread.sleep(3000);
-        return process;
     }
 
     private boolean executeGaugeCommand(String[] args, HashMap<String, String> envVars) throws IOException, InterruptedException {
@@ -441,48 +307,4 @@ public abstract class GaugeProject {
 
     public abstract void configureCustomScreengrabber(String screenshotFile) throws IOException;
 
-    public ExecutionSummary rerunFailedWithLogLevel() throws Exception {
-        return execute(new String[]{"run", "--log-level=debug", "--failed"}, null);
-    }
-
-    public ExecutionSummary rerunFailedWithSpecificDir() throws Exception {
-        return execute(new String[]{"run", "specs", "--failed"}, null);
-    }
-
-    public ExecutionSummary executeRepeatWithFailed() throws Exception {
-        return execute(new String[]{"run", "--repeat", "--failed"}, null);
-    }
-
-    public ExecutionSummary repeatLastRunWithLogLevel() throws Exception {
-        return execute(new String[]{"run", "--log-level=debug", "--repeat"}, null);
-    }
-
-    public ExecutionSummary repeatLastRunWithSpecificDir() throws Exception {
-        return execute(new String[]{"run", "specs", "--repeat"}, null);
-    }
-
-    public ExecutionSummary executeSpecWithFlags(String specName, Map<String, String> flags) throws Exception {
-
-        ArrayList<String> cmdArgs = new ArrayList<String>();
-        cmdArgs.add("run");
-        cmdArgs.add("--simple-console");
-        cmdArgs.add("--verbose");
-        for (Map.Entry<String, String> entry : flags.entrySet()) {
-            String key = entry.getKey();
-            cmdArgs.add(ensureFlagFormat(key));
-            cmdArgs.add(entry.getValue());
-        }
-        cmdArgs.add(String.format("specs%s%s%s", File.separator, Util.getSpecName(specName), ".spec"));
-        String[] args = cmdArgs.toArray(new String[cmdArgs.size()]);
-        return execute(args, null);
-
-
-    }
-
-    private String ensureFlagFormat(String flag) {
-        if (flag.startsWith("--") || flag.startsWith("-"))
-            return flag;
-        String prefix = flag.length() > 1 ? "--" : "-";
-        return String.format("%s%s", prefix, flag);
-    }
 }

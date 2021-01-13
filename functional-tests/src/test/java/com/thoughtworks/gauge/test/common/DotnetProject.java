@@ -48,7 +48,6 @@ public class DotnetProject extends GaugeProject {
         List<String> paramTypes = new ArrayList<String>();
         StepValueExtractor stepValueExtractor = new StepValueExtractor();
         StepValueExtractor.StepValue stepValue =  stepValueExtractor.getFor(stepImpl.getFirstStepText());
-        ArrayList<String> stepValues = stepValueExtractor.getValueFor(stepImpl.getAllStepTexts());
         String className = Util.getUniqueName();
         StringBuilder classText = new StringBuilder();
         classText.append("public class ").append(className).append("\n{\n");

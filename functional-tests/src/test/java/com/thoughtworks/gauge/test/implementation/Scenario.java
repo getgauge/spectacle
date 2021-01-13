@@ -26,15 +26,4 @@ public class Scenario {
                 .withSubDirPath(subFolder)
                 .buildAndAddToProject(false);
     }
-
-    @Step("Update scenario <Sample scenario> in specification <Basic_spec_execution> with the following steps unimplemented <table>")
-    public void updateScenario(String scenarioName, String specName, Table steps) throws Exception {
-        new SpecificationBuilder().withScenarioName(scenarioName)
-                .withSpecName(specName)
-                .withScenarioDataStoreWriteStatement("specName", specName)
-                .withScenarioDataStoreWriteStatement("Scenario name", scenarioName)
-                .withScenarioDataStoreWriteStatement(scenarioName, steps.toString())
-                .withSteps(steps)
-                .buildAndAddToProject(true);
-    }
 }

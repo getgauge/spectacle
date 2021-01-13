@@ -70,7 +70,10 @@ public class JavascriptProject extends GaugeProject {
 
     @Override
     public List<String> getLanguageSpecificGitIgnoreText() {
-        return new ArrayList<String>() {{
+        return new ArrayList<String>() {
+            private static final long serialVersionUID = -5803698617114692371L;
+
+            {
             add("# Gauge - metadata dir\n.gauge");
             add("# Gauge - log files dir\nlogs");
             add("# Gauge - reports dir\nreports");
