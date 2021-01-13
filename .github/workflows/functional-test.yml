@@ -1,0 +1,45 @@
+name: FTs
+on: [push, pull_request]
+jobs:
+
+  functional-tests:
+    name: ${{ matrix.language }} ${{ matrix.os }} FTs 
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        # no windows because `go run build/make.go --distro` errors (can't find zip executable)
+        os: [ubuntu-latest, macos-latest]
+        language: [java]
+      
+    steps:
+      - name: Set up Go 1.15
+        uses: actions/setup-go@v1
+        with:
+          go-version: 1.15
+        id: go
+
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Install Gauge
+        uses: getgauge/setup-gauge@master
+        with:
+          gauge-version: master
+          gauge-plugins: java, html-report, screenshot
+
+      - name: Install spectacle
+        run: |
+          go run build/make.go && go run build/make.go --distro
+          gauge install spectacle --file $(ls -d bin/distros/*.zip)
+
+      - name: Run FTs
+        run: |
+          cd functional-tests
+          ./gradlew clean ft
+
+      - name: Upload logs
+        uses: actions/upload-artifact@v1
+        if: failure()
+        with:
+          name: ft-logs-ubuntu-latest
+          path: functional-tests/logs
