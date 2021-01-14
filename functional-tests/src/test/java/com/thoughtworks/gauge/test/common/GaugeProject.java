@@ -58,14 +58,6 @@ public abstract class GaugeProject {
         switch (language.toLowerCase()) {
             case "java":
                 return new JavaProject(projName);
-            case "ruby":
-                return new RubyProject(projName);
-            case "dotnet":
-                return new DotnetProject(projName);
-            case "js":
-                return new JavascriptProject(projName);
-            case "python":
-                return new PythonProject(projName);
             default:
                 return new UnknownProject(language, projName);
         }
