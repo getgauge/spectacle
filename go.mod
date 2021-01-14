@@ -10,5 +10,5 @@ require (
 	github.com/golang-commonmark/mdurl v0.0.0-20180910110917-8d018c6567d6 // indirect
 	github.com/golang-commonmark/puny v0.0.0-20180910110745-050be392d8b8 // indirect
 	github.com/golang/protobuf v1.4.3
-	google.golang.org/grpc v1.33.2
+	google.golang.org/grpc v1.35.0
 )
