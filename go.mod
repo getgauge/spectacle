@@ -8,7 +8,7 @@ require (
 	github.com/golang-commonmark/markdown v0.0.0-20180910011815-a8f139058164
 	github.com/golang-commonmark/mdurl v0.0.0-20180910110917-8d018c6567d6 // indirect
 	github.com/golang-commonmark/puny v0.0.0-20180910110745-050be392d8b8 // indirect
-	github.com/golang/protobuf v1.5.3
+	github.com/golang/protobuf v1.5.4
 	github.com/opennota/wd v0.0.0-20180911144301-b446539ab1e7 // indirect
 	github.com/russross/blackfriday v1.6.0 // indirect
 	golang.org/x/net v0.0.0-20190620200207-3b0461eec859 // indirect
