@@ -16,6 +16,11 @@ jobs:
         with:
           go-version-file: 'go.mod'
 
+      - name: Setup git
+        run: |
+          git config --global user.name "$(git --no-pager log --format=format:'%an' -n 1)"
+          git config --global user.email "$(git --no-pager log --format=format:'%ae' -n 1)"
+
       - name: Build artifacts
         run: |
           go run build/make.go --all-platforms
@@ -24,7 +29,7 @@ jobs:
       - name: Release on github
         run: |
           if [ -z "$version" ]; then
-            version=$(cd bin/distros && ls spectacle* | head -1 | sed "s/\.[^\.]*$//" | sed "s/spectacle-//" | sed | sed "s/-[a-z]*\.[a-z0-9_]*$//");
+            version=$(cd bin/distros && ls spectacle* | head -1 | sed "s/\.[^\.]*$//" | sed "s/spectacle-//" | sed "s/-[a-z]*\.[a-z0-9_]*$//");
           fi
           echo "VERSION=$version" >> $GITHUB_ENV
 
