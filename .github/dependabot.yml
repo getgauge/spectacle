@@ -14,3 +14,11 @@ updates:
     directory: "/"
     schedule:
       interval: weekly
+  - package-ecosystem: gradle
+    directory: "/functional-tests"
+    schedule:
+      interval: monthly
+    groups:
+      gradle-dependencies:
+        patterns:
+          - "*"
