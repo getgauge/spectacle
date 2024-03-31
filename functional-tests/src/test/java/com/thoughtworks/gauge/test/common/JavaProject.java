@@ -11,7 +11,7 @@ import com.thoughtworks.gauge.Table;
 import com.thoughtworks.gauge.TableRow;
 import com.thoughtworks.gauge.test.StepImpl;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
 public class JavaProject extends GaugeProject {

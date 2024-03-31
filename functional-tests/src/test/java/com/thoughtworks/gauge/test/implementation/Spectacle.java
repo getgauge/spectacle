@@ -9,8 +9,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.logging.Level;
 
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import org.htmlunit.WebClient;
+import org.htmlunit.html.HtmlPage;
 import com.thoughtworks.gauge.Step;
 import com.thoughtworks.gauge.Table;
 import com.thoughtworks.gauge.test.common.Util;
@@ -25,7 +25,7 @@ public class Spectacle {
 
     @Step("Verify spectacle documentation statistics with <statistics>")
     public void verifyStatistics(Table statistics) throws IOException {
-        java.util.logging.Logger.getLogger("com.gargoylesoftware").setLevel(Level.OFF);
+        java.util.logging.Logger.getLogger("org.htmlunit").setLevel(Level.OFF);
         LogFactory.getFactory().setAttribute("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog");
         java.util.logging.Logger.getLogger("org.apache.commons.httpclient").setLevel(Level.OFF);
         final WebClient webClient = getWebClient();

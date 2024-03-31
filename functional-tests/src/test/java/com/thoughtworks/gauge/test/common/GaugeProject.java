@@ -5,7 +5,7 @@ import com.thoughtworks.gauge.TableRow;
 import com.thoughtworks.gauge.datastore.ScenarioDataStore;
 import com.thoughtworks.gauge.test.StepImpl;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -19,7 +19,7 @@ import java.util.*;
 import static java.util.Arrays.asList;
 
 public abstract class GaugeProject {
-    private static final Boolean INITIALIZE_LOCK = true;
+    private static final Object INITIALIZE_LOCK = new Object();
 
     private static final List<String> PRODUCT_ENVS = asList("GAUGE_ROOT", "GAUGE_HOME", "GAUGE_SOURCE_BUILD", "GAUGE_PYTHON_COMMAND");
     private static final List<String> GAUGE_ENVS = asList("gauge_custom_classpath", "overwrite_reports", "GAUGE_INTERNAL_PORT",

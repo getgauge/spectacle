@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'org.gauge' version '1.8.1'
+    id 'org.gauge' version '2.0.0'
 }
 
 repositories {
@@ -9,28 +9,27 @@ repositories {
 }
 
 dependencies {
-    testImplementation 'com.thoughtworks.gauge:gauge-java:+'
     testImplementation 'junit:junit:4.13.1'
-    testImplementation 'net.sourceforge.htmlunit:htmlunit:2.45.0'
+    testImplementation 'com.thoughtworks.gauge:gauge-java:+'
+    testImplementation 'org.htmlunit:htmlunit:3.11.0'
     testImplementation 'se.fishtank:css-selectors:2.0'
-    testImplementation 'org.jsoup:jsoup:1.13.1'
-    testImplementation 'org.assertj:assertj-core:3.18.1'
-    testImplementation 'org.json:json:20200518'
+    testImplementation 'org.jsoup:jsoup:1.17.2'
+    testImplementation 'org.assertj:assertj-core:3.25.3'
+    testImplementation 'org.json:json:20240303'
 }
 
-sourceCompatibility = '1.8'
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
 
-import com.thoughtworks.gauge.gradle.*
+import org.gauge.gradle.*
 
-def languages = ['java']
-
-languages.each {lang ->
-    task "ft" (type: GaugeTask) {
-        doFirst {
-            gauge {
-                specsDir = 'specs'
-                inParallel = true
-            }
+tasks.register("ft", GaugeTask) {
+    doFirst {
+        gauge {
+            specsDir = 'specs'
+            inParallel = true
         }
     }
 }
