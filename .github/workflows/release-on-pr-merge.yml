@@ -9,17 +9,12 @@ jobs:
     env:
       GITHUB_TOKEN: "${{ secrets.GAUGEBOT_GITHUB_TOKEN }}"
     steps:
-      - name: Set up Go 1.13
-        uses: actions/setup-go@v1
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
         with:
-          go-version: 1.13
-        id: go
-
-      - name: Check out code into the Go module directory
-        uses: actions/checkout@v2
-
-      - name: Install hub
-        uses: geertvdc/setup-hub@master
+          go-version-file: 'go.mod'
 
       - name: Build artifacts
         run: |
@@ -28,33 +23,18 @@ jobs:
 
       - name: Release on github
         run: |
-          cd bin/distros
           if [ -z "$version" ]; then
-            version=$(ls spectacle* | head -1 | sed "s/\.[^\.]*$//" | sed "s/spectacle-//" | sed | sed "s/-[a-z]*\.[a-z0-9_]*$//");
+            version=$(cd bin/distros && ls spectacle* | head -1 | sed "s/\.[^\.]*$//" | sed "s/spectacle-//" | sed | sed "s/-[a-z]*\.[a-z0-9_]*$//");
           fi
-          echo "::set-env name=VERSION::$version"
-          artifacts=()
-          dir=`pwd`
-          for i in `ls`; do
-            artifacts+="$dir/$i "
-          done
-          cd ..
+          echo "VERSION=$version" >> $GITHUB_ENV
+
           echo "---------------------------"
           echo "Updating release v$version"
           echo "---------------------------"
           echo -e "Spectacle v$version\n\n" > desc.txt
           release_description=$(ruby -e "$(curl -sSfL https://github.com/getgauge/gauge/raw/master/build/create_release_text.rb)" getgauge spectacle)
           echo "$release_description" >> desc.txt
-          echo "Creating new draft for release v$version"
-          hub release create -F ./desc.txt "v$version"
-          rm -rf desc.txt
-          echo "Start uploading assets..."
-          for i in `ls $artifacts`; do
-              hub release edit -m "" -a $i "v$version"
-              if [ $? -ne 0 ];then
-                  exit 1
-              fi
-          done
+          gh release create --title "Spectacle v${version}" --notes-file ./desc.txt "v${version}" bin/distros/*
 
       - name: Update metadata in gauge-repository
         run: |
