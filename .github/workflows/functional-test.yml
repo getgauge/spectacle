@@ -30,6 +30,12 @@ jobs:
           go run build/make.go && go run build/make.go --distro
           gauge install spectacle --file $(ls -d bin/distros/*.zip)
 
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+
       - name: Run FTs
         run: |
           cd functional-tests
