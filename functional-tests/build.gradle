@@ -9,7 +9,7 @@ repositories {
 }
 
 dependencies {
-    testImplementation 'junit:junit:4.13.1'
+    testImplementation 'junit:junit:4.13.2'
     testImplementation 'com.thoughtworks.gauge:gauge-java:+'
     testImplementation 'org.htmlunit:htmlunit:3.11.0'
     testImplementation 'se.fishtank:css-selectors:2.0'
