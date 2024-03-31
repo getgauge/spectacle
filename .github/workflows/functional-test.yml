@@ -36,7 +36,7 @@ jobs:
           ./gradlew clean ft
 
       - name: Upload logs
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: ft-logs-ubuntu-latest
