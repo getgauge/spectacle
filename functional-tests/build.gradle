@@ -14,7 +14,7 @@ dependencies {
     testImplementation 'org.htmlunit:htmlunit:4.1.0'
     testImplementation 'se.fishtank:css-selectors:2.0'
     testImplementation 'org.jsoup:jsoup:1.17.2'
-    testImplementation 'org.assertj:assertj-core:3.25.3'
+    testImplementation 'org.assertj:assertj-core:3.26.0'
     testImplementation 'org.json:json:20240303'
 }
 
