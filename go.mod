@@ -5,7 +5,7 @@ go 1.22
 require (
 	github.com/golang-commonmark/markdown v0.0.0-20180910011815-a8f139058164
 	github.com/golang/protobuf v1.5.4
-	google.golang.org/grpc v1.66.0
+	google.golang.org/grpc v1.66.2
 )
 
 require (
