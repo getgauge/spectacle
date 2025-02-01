@@ -11,11 +11,11 @@ repositories {
 dependencies {
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'com.thoughtworks.gauge:gauge-java:+'
-    testImplementation 'org.htmlunit:htmlunit:4.7.0'
+    testImplementation 'org.htmlunit:htmlunit:4.9.0'
     testImplementation 'se.fishtank:css-selectors:2.0'
     testImplementation 'org.jsoup:jsoup:1.18.3'
-    testImplementation 'org.assertj:assertj-core:3.27.0'
-    testImplementation 'org.json:json:20240303'
+    testImplementation 'org.assertj:assertj-core:3.27.3'
+    testImplementation 'org.json:json:20250107'
 }
 
 java {
