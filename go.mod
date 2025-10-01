@@ -1,6 +1,6 @@
 module github.com/getgauge/spectacle
 
-go 1.24
+go 1.24.7
 
 require (
 	github.com/golang-commonmark/markdown v0.0.0-20180910011815-a8f139058164
