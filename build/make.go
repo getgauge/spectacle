@@ -10,7 +10,6 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
@@ -20,18 +19,14 @@ import (
 )
 
 const (
-	CGO_ENABLED = "CGO_ENABLED"
-)
-
-const (
+	CGO_ENABLED       = "CGO_ENABLED"
 	dotGauge          = ".gauge"
 	plugins           = "plugins"
-	distros           = "distros"
-	GOARCH            = "GOARCH"
-	GOOS              = "GOOS"
-	X86               = "386"
+	goARCH            = "GOARCH"
+	goOS              = "GOOS"
+	x86               = "386"
+	x86_64            = "amd64"
 	ARM64             = "arm64"
-	X86_64            = "amd64"
 	DARWIN            = "darwin"
 	LINUX             = "linux"
 	WINDOWS           = "windows"
@@ -39,8 +34,11 @@ const (
 	newDirPermissions = 0755
 	gauge             = "gauge"
 	spectacle         = "spectacle"
-	pluginJsonFile    = "plugin.json"
+	deploy            = "deploy"
+	pluginJSONFile    = "plugin.json"
 )
+
+var deployDir = filepath.Join(deploy, spectacle)
 
 func main() {
 	flag.Parse()
@@ -58,7 +56,7 @@ func compile() {
 	if *allPlatforms {
 		compileAcrossPlatforms()
 	} else {
-		compileGoPackage(spectacle)
+		compileGoPackage()
 	}
 }
 
@@ -66,21 +64,22 @@ func createPluginDistro(forAllPlatforms bool) {
 	if forAllPlatforms {
 		for _, platformEnv := range platformEnvs {
 			setEnv(platformEnv)
-			*binDir = filepath.Join(bin, fmt.Sprintf("%s_%s", platformEnv[GOOS], platformEnv[GOARCH]))
-			fmt.Printf("Creating distro for platform => OS:%s ARCH:%s \n", platformEnv[GOOS], platformEnv[GOARCH])
+			*binDir = filepath.Join(bin, fmt.Sprintf("%s_%s", platformEnv[goOS], platformEnv[goARCH]))
+			fmt.Printf("Creating distro for platform => OS:%s ARCH:%s \n", platformEnv[goOS], platformEnv[goARCH])
 			createDistro()
 		}
 	} else {
 		createDistro()
 	}
-	log.Printf("Distributables created in directory => %s \n", bin)
+	fmt.Printf("Distributables created in directory => %s \n", deploy)
 }
 
 func createDistro() {
 	packageName := fmt.Sprintf("%s-%s-%s.%s", spectacle, getPluginVersion(), getGOOS(), getArch())
-	mirrorFile(pluginJsonFile, filepath.Join(getBinDir(), pluginJsonFile))
-	os.Mkdir(filepath.Join(bin, distros), 0755)
-	createZipFromUtil(getBinDir(), packageName)
+	distroDir := filepath.Join(deploy, packageName)
+	copyPluginFiles(distroDir)
+	createZipFromUtil(deploy, packageName)
+	os.RemoveAll(distroDir)
 }
 
 func createZipFromUtil(dir, name string) {
@@ -88,13 +87,20 @@ func createZipFromUtil(dir, name string) {
 	if err != nil {
 		panic(err)
 	}
-	os.Chdir(dir)
-	output, err := executeCommand("zip", "-r", filepath.Join("..", distros, name+".zip"), ".")
+	err = os.Chdir(filepath.Join(dir, name))
+	if err != nil {
+		panic(fmt.Sprintf("Failed to chdir to %s: %s", filepath.Join(dir, name), err.Error()))
+	}
+
+	output, err := executeCommand("zip", "-r", filepath.Join("..", name+".zip"), ".")
 	fmt.Println(output)
 	if err != nil {
-		panic(fmt.Sprintf("Failed to zip: %s", err))
+		panic(fmt.Sprintf("Failed to zip: %s", err.Error()))
 	}
-	os.Chdir(wd)
+	err = os.Chdir(wd)
+	if err != nil {
+		panic(fmt.Sprintf("Failed to chdir to %s: %s", filepath.Join(dir, name), err.Error()))
+	}
 }
 
 func isExecMode(mode os.FileMode) bool {
@@ -152,7 +158,7 @@ func mirrorFile(src, dst string) error {
 }
 
 func mirrorDir(src, dst string) error {
-	log.Printf("Copying '%s' -> '%s'\n", src, dst)
+	fmt.Printf("Copying '%s' -> '%s'\n", src, dst)
 	err := filepath.Walk(src, func(path string, fi os.FileInfo, err error) error {
 		if err != nil {
 			return err
@@ -162,7 +168,7 @@ func mirrorDir(src, dst string) error {
 		}
 		suffix, err := filepath.Rel(src, path)
 		if err != nil {
-			return fmt.Errorf("Failed to find Rel(%q, %q): %v", src, path, err)
+			return fmt.Errorf("Failed to find Rel(%q, %q): %v", src, path, err.Error())
 		}
 		return mirrorFile(path, filepath.Join(dst, suffix))
 	})
@@ -173,7 +179,7 @@ func runProcess(command string, arg ...string) {
 	cmd := exec.Command(command, arg...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
-	log.Printf("Execute %v\n", cmd.Args)
+	fmt.Printf("Execute %v\n", cmd.Args)
 	err := cmd.Run()
 	if err != nil {
 		panic(err)
@@ -183,10 +189,10 @@ func runProcess(command string, arg ...string) {
 func executeCommand(command string, arg ...string) (string, error) {
 	cmd := exec.Command(command, arg...)
 	bytes, err := cmd.Output()
-	return strings.TrimSpace(fmt.Sprintf("%s", bytes)), err
+	return strings.TrimSpace(string(bytes)), err
 }
 
-func compileGoPackage(packageName string) {
+func compileGoPackage() {
 	runProcess("go", "build", "-o", getGaugeExecutablePath(spectacle))
 }
 
@@ -208,10 +214,42 @@ func getBinDir() string {
 	return filepath.Join(bin, fmt.Sprintf("%s_%s", getGOOS(), getGOARCH()))
 }
 
+// key will be the source file and value will be the target
+func copyFiles(files map[string]string, installDir string) {
+	for src, dst := range files {
+		base := filepath.Base(src)
+		installDst := filepath.Join(installDir, dst)
+		fmt.Printf("Copying %s -> %s\n", src, installDst)
+		stat, err := os.Stat(src)
+		if err != nil {
+			panic(err)
+		}
+		if stat.IsDir() {
+			err = mirrorDir(src, installDst)
+		} else {
+			err = mirrorFile(src, filepath.Join(installDst, base))
+		}
+		if err != nil {
+			panic(err)
+		}
+	}
+}
+
+func copyPluginFiles(destDir string) {
+	files := make(map[string]string)
+	if getGOOS() == "windows" {
+		files[filepath.Join(getBinDir(), spectacle+".exe")] = ""
+	} else {
+		files[filepath.Join(getBinDir(), spectacle)] = ""
+	}
+	files[pluginJSONFile] = ""
+	copyFiles(files, destDir)
+}
+
 func getPluginVersion() string {
-	pluginProperties, err := getPluginProperties(pluginJsonFile)
+	pluginProperties, err := getPluginProperties(pluginJSONFile)
 	if err != nil {
-		panic(fmt.Sprintf("Failed to get properties file. %s", err))
+		panic(fmt.Sprintf("Failed to get properties file. %s", err.Error()))
 	}
 	return pluginProperties["version"].(string)
 }
@@ -230,24 +268,24 @@ var binDir = flag.String("bin-dir", "", "Specifies OS_PLATFORM specific binaries
 
 var (
 	platformEnvs = []map[string]string{
-		map[string]string{GOARCH: X86_64, GOOS: DARWIN, CGO_ENABLED: "0"},
-		map[string]string{GOARCH: ARM64, GOOS: DARWIN, CGO_ENABLED: "0"},
-		map[string]string{GOARCH: X86_64, GOOS: LINUX, CGO_ENABLED: "0"},
-		map[string]string{GOARCH: ARM64, GOOS: LINUX, CGO_ENABLED: "0"},
-		map[string]string{GOARCH: X86_64, GOOS: WINDOWS, CGO_ENABLED: "0"},
-		map[string]string{GOARCH: ARM64, GOOS: WINDOWS, CGO_ENABLED: "0"},
+		{goARCH: x86_64, goOS: DARWIN, CGO_ENABLED: "0"},
+		{goARCH: ARM64, goOS: DARWIN, CGO_ENABLED: "0"},
+		{goARCH: x86_64, goOS: LINUX, CGO_ENABLED: "0"},
+		{goARCH: ARM64, goOS: LINUX, CGO_ENABLED: "0"},
+		{goARCH: x86_64, goOS: WINDOWS, CGO_ENABLED: "0"},
+		{goARCH: ARM64, goOS: WINDOWS, CGO_ENABLED: "0"},
 	}
 )
 
 func getPluginProperties(jsonPropertiesFile string) (map[string]interface{}, error) {
-	pluginPropertiesJson, err := ioutil.ReadFile(jsonPropertiesFile)
+	pluginPropertiesJson, err := os.ReadFile(jsonPropertiesFile)
 	if err != nil {
-		fmt.Printf("Could not read %s: %s\n", filepath.Base(jsonPropertiesFile), err)
+		fmt.Printf("Could not read %s: %s\n", filepath.Base(jsonPropertiesFile), err.Error())
 		return nil, err
 	}
 	var pluginJson interface{}
 	if err = json.Unmarshal([]byte(pluginPropertiesJson), &pluginJson); err != nil {
-		fmt.Printf("Could not read %s: %s\n", filepath.Base(jsonPropertiesFile), err)
+		fmt.Printf("Could not read %s: %s\n", filepath.Base(jsonPropertiesFile), err.Error())
 		return nil, err
 	}
 	return pluginJson.(map[string]interface{}), nil
@@ -256,15 +294,18 @@ func getPluginProperties(jsonPropertiesFile string) (map[string]interface{}, err
 func compileAcrossPlatforms() {
 	for _, platformEnv := range platformEnvs {
 		setEnv(platformEnv)
-		fmt.Printf("Compiling for platform => OS:%s ARCH:%s \n", platformEnv[GOOS], platformEnv[GOARCH])
-		compileGoPackage(spectacle)
+		fmt.Printf("Compiling for platform => OS:%s ARCH:%s \n", platformEnv[goOS], platformEnv[goARCH])
+		compileGoPackage()
 	}
 }
 
 func installPlugin(installPrefix string) {
+	copyPluginFiles(deployDir)
 	pluginInstallPath := filepath.Join(installPrefix, spectacle, getPluginVersion())
-	mirrorDir(getBinDir(), pluginInstallPath)
-	mirrorFile(pluginJsonFile, filepath.Join(pluginInstallPath, pluginJsonFile))
+	err := mirrorDir(deployDir, pluginInstallPath)
+	if err != nil {
+		panic(fmt.Sprintf("Failed to mirror directory  '%s' to '%s': %s", deployDir, pluginInstallPath, err.Error()))
+	}
 }
 
 func updatePluginInstallPrefix() {
@@ -291,14 +332,16 @@ func getUserHome() string {
 
 func getArch() string {
 	arch := getGOARCH()
-	if arch == X86 {
+	if arch == x86 {
 		return "x86"
+	} else if arch == ARM64 {
+		return "arm64"
 	}
 	return "x86_64"
 }
 
 func getGOARCH() string {
-	goArch := os.Getenv(GOARCH)
+	goArch := os.Getenv(goARCH)
 	if goArch == "" {
 		return runtime.GOARCH
 
@@ -307,7 +350,7 @@ func getGOARCH() string {
 }
 
 func getGOOS() string {
-	os := os.Getenv(GOOS)
+	os := os.Getenv(goOS)
 	if os == "" {
 		return runtime.GOOS
 
