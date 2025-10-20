@@ -7,10 +7,9 @@ jobs:
     if: github.event.deployment.environment == 'production'
     runs-on: ubuntu-latest
     env:
-      GITHUB_TOKEN: "${{ secrets.GAUGEBOT_GITHUB_TOKEN }}"
+      GITHUB_TOKEN: '${{ secrets.GAUGEBOT_GITHUB_TOKEN }}'
     steps:
       - uses: actions/checkout@v5
-
       - name: Set up Go
         uses: actions/setup-go@v6
         with:
@@ -30,7 +29,7 @@ jobs:
       - name: Release on github
         run: |
           if [ -z "$version" ]; then
-            version=$(cd bin/distros && ls spectacle* | head -1 | sed "s/\.[^\.]*$//" | sed "s/spectacle-//" | sed "s/-[a-z]*\.[a-z0-9_]*$//");
+            version=$(cd deploy && ls spectacle* | head -1 | sed "s/\.[^\.]*$//" | sed "s/spectacle-//" | sed "s/-[a-z]*\.[a-z0-9_]*$//");
           fi
           echo "VERSION=$version" >> $GITHUB_ENV
 
@@ -40,7 +39,7 @@ jobs:
           echo -e "Spectacle v$version\n\n" > desc.txt
           release_description=$(ruby -e "$(curl -sSfL https://github.com/getgauge/gauge/raw/master/build/create_release_text.rb)" getgauge spectacle)
           echo "$release_description" >> desc.txt
-          gh release create --title "Spectacle v${version}" --notes-file ./desc.txt "v${version}" bin/distros/*
+          gh release create --title "Spectacle v${version}" --notes-file ./desc.txt "v${version}" deploy/*
 
       - name: Update metadata in gauge-repository
         run: |

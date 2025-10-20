@@ -7,7 +7,6 @@ package conv
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -34,7 +33,7 @@ var projectRoot = util.GetProjectRoot()
 
 func ConvertFile(file string, files []string, index int) {
 	md := markdown.New(markdown.XHTMLOutput(true), markdown.Nofollow(true), markdown.Quotes(quotes), markdown.Typographer(false))
-	input, err := ioutil.ReadFile(file)
+	input, err := os.ReadFile(file)
 	util.Fatal(fmt.Sprintf("Error while reading %s file", file), err)
 	output := md.RenderToString(input)
 	var next, prev string

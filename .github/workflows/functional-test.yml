@@ -1,5 +1,11 @@
 name: FTs
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
 jobs:
 
   functional-tests:
@@ -29,7 +35,7 @@ jobs:
       - name: Install spectacle
         run: |
           go run build/make.go && go run build/make.go --distro
-          gauge install spectacle --file $(ls -d bin/distros/*.zip)
+          gauge install spectacle --file $(ls -d deploy/*.zip)
 
       - name: Set up JDK
         uses: actions/setup-java@v5
