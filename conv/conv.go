@@ -6,7 +6,6 @@
 package conv
 
 import (
-	"bytes"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -14,7 +13,7 @@ import (
 
 	"github.com/getgauge/spectacle/gauge_messages"
 	"github.com/getgauge/spectacle/util"
-	"github.com/golang-commonmark/markdown"
+	"gitlab.com/golang-commonmark/markdown"
 )
 
 const (
@@ -36,8 +35,6 @@ func ConvertFile(file string, files []string, index int) {
 	md := markdown.New(markdown.XHTMLOutput(true), markdown.Nofollow(true), markdown.Quotes(quotes), markdown.Typographer(false))
 	input, err := os.ReadFile(file)
 	util.Fatal(fmt.Sprintf("Error while reading %s file", file), err)
-	// Normalize Windows line endings to Unix-style LF so the markdown renderer handles the content correctly on Windows.
-	input = bytes.ReplaceAll(input, []byte("\r\n"), []byte("\n"))
 	output := md.RenderToString(input)
 	var next, prev string
 	if index+1 < len(files) {
