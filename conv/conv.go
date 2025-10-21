@@ -36,12 +36,8 @@ func ConvertFile(file string, files []string, index int) {
 	md := markdown.New(markdown.XHTMLOutput(true), markdown.Nofollow(true), markdown.Quotes(quotes), markdown.Typographer(false))
 	input, err := os.ReadFile(file)
 	util.Fatal(fmt.Sprintf("Error while reading %s file", file), err)
-
-	// Normalize Windows and old-Mac line endings to Unix-style LF so
-	// the markdown renderer handles the content correctly on Windows.
+	// Normalize Windows line endings to Unix-style LF so the markdown renderer handles the content correctly on Windows.
 	input = bytes.ReplaceAll(input, []byte("\r\n"), []byte("\n"))
-	input = bytes.ReplaceAll(input, []byte("\r"), []byte("\n"))
-
 	output := md.RenderToString(input)
 	var next, prev string
 	if index+1 < len(files) {
