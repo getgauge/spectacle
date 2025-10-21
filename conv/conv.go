@@ -6,6 +6,7 @@
 package conv
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -35,7 +36,12 @@ func ConvertFile(file string, files []string, index int) {
 	md := markdown.New(markdown.XHTMLOutput(true), markdown.Nofollow(true), markdown.Quotes(quotes), markdown.Typographer(false))
 	input, err := os.ReadFile(file)
 	util.Fatal(fmt.Sprintf("Error while reading %s file", file), err)
-	input = normalizeTables(input)
+
+	// Normalize Windows and old-Mac line endings to Unix-style LF so
+	// the markdown renderer handles the content correctly on Windows.
+	input = bytes.ReplaceAll(input, []byte("\r\n"), []byte("\n"))
+	input = bytes.ReplaceAll(input, []byte("\r"), []byte("\n"))
+
 	output := md.RenderToString(input)
 	var next, prev string
 	if index+1 < len(files) {
@@ -75,24 +81,4 @@ func getRelPath(f, f1 string) string {
 	p, err := filepath.Rel(f, f1)
 	util.Fatal("Cannot get relative path", err)
 	return p
-}
-
-// Insert a blank line before a table start (lines beginning with '|')
-// when the previous line is non-empty and not itself a table line
-func normalizeTables(input []byte) []byte {
-	s := strings.ReplaceAll(string(input), "\r\n", "\n")
-	lines := strings.Split(s, "\n")
-	out := make([]string, 0, len(lines)+4)
-	for i := 0; i < len(lines); i++ {
-		trim := strings.TrimLeft(lines[i], " \t")
-		if strings.HasPrefix(trim, "|") && len(out) > 0 {
-			prevTrim := strings.TrimSpace(out[len(out)-1])
-			// if previous line is not empty and not a table row, add a blank line
-			if prevTrim != "" && !strings.HasPrefix(prevTrim, "|") {
-				out = append(out, "")
-			}
-		}
-		out = append(out, lines[i])
-	}
-	return []byte(strings.Join(out, "\n"))
 }
