@@ -13,7 +13,7 @@ import (
 
 	"github.com/getgauge/spectacle/gauge_messages"
 	"github.com/getgauge/spectacle/util"
-	"github.com/golang-commonmark/markdown"
+	"gitlab.com/golang-commonmark/markdown"
 )
 
 const (
