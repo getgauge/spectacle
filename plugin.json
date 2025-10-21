@@ -1,6 +1,6 @@
 {
     "id" : "spectacle",
-    "version" : "0.2.3",
+    "version" : "0.2.4",
     "name" : "Spectacle",
     "description" : "Markdown to HTML",
     "install": {
