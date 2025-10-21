@@ -1,6 +1,6 @@
 Spectacle
 =========
-[![Build Status](https://travis-ci.org/getgauge/spectacle.svg?branch=master)](https://travis-ci.org/getgauge/spectacle)
+[![Actions Status](https://github.com/getgauge/spectacle/workflows/build/badge.svg)](https://github.com/getgauge/spectwcle/actions)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v1.4%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
 
 Generates HTML from Specification/Markdown files. This is a plugin for [gauge](https://gauge.org).
