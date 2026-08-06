@@ -16,6 +16,7 @@ jobs:
         # no windows because `go run build/make.go --distro` errors (can't find zip executable)
         os: [ubuntu-latest, macos-latest]
         language: [java]
+      fail-fast: false
       
     steps:
       - uses: actions/checkout@v7
