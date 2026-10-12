@@ -1,6 +1,6 @@
 module github.com/getgauge/spectacle
 
-go 1.26.0
+go 1.27.0
 
 require (
 	github.com/golang/protobuf v1.5.4
